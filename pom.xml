@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.exam</groupId>
-	<artifactId>boot02</artifactId>
+	<artifactId>mybatisproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>boot_template</name>
 	<description>Demo project for Spring Boot</description>
@@ -21,6 +21,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<!--<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,7 +43,16 @@
 	       <groupId>org.springframework.boot</groupId>
 	       <artifactId>spring-boot-devtools</artifactId>
 	    </dependency> 
-	    
+	    	<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		</dependency>
+	    <dependency>
+		    <groupId>org.modelmapper</groupId>
+		    <artifactId>modelmapper</artifactId>
+		    <version>3.2.0</version>
+		</dependency>
+
 	  
 		<dependency>
 		    <groupId>org.mybatis.spring.boot</groupId>
