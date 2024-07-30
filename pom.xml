@@ -8,7 +8,7 @@
 		<version>2.7.18</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.exam</groupId>
+	<groupId>com.store</groupId>
 	<artifactId>mybatisproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>boot_template</name>
