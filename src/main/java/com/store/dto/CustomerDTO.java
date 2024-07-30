@@ -1,6 +1,7 @@
 package com.store.dto;
 
 import java.util.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -31,6 +32,8 @@ public class CustomerDTO {
 	String customerName;
 	String customerPhone;
 	Date customerDate;
+    int customerGender;
+    Timestamp customerTime;
 	String customerAdd;
 	String customerAddMore;
 	String customerEmail;

@@ -18,9 +18,8 @@ import org.springframework.stereotype.Service;
 
 import com.store.dto.Member;
 import com.store.dto.Sku;
-import com.store.mapper.MemberMapper;
 import com.store.mapper.SkuMapper;
-import com.store.service.MemberService;
+
 @Service
 public class SkuServiceImpl implements SkuService{
 

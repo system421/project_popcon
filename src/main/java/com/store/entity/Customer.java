@@ -1,6 +1,7 @@
 package com.store.entity;
 
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -50,6 +51,12 @@ public class Customer {
 	    @Temporal(TemporalType.DATE)
 	    @Column(name = "customer_date")
 	    private Date customerDate;
+	    
+	    @Column(name = "customer_gender")
+	    private int customerGender;
+	    
+	    @Column(name = "customer_time")
+	    private Timestamp customerTime;
 
 	    @Column(name = "customer_add")
 	    private String customerAdd;

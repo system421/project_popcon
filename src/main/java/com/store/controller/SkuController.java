@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.dto.Sku;
-import com.store.service.MemberService;
+
 import com.store.service.SkuService;
 
 import org.springframework.beans.factory.annotation.Autowired;
