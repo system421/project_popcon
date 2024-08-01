@@ -9,26 +9,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.apache.ibatis.type.Alias;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@Alias("Cart")
 public class CartDTO {
-	int cartIdx;
-	int quantity;
-	int fkMemberIdx;
-	int fkProductIdx;
-	
-	
-	
+
+	private int cartIdx;
+    private int customerIdx;
+    private int skuIdx;
+    private int skuValue;
+    private String skuName;
+    private String skuBarcode;
+    private Integer skuCost;
 	
 }

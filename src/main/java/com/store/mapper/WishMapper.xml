@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.store.mapper.WishMapper">
+
+
+  <select id="findAll" resultType="com.store.dto.WishDTO">
+        SELECT 
+            w.wish_idx AS wishIdx,
+            w.customer_idx AS customerIdx,
+            w.sku_idx AS skuIdx,
+            s.sku_name AS skuName,
+            s.sku_barcode AS skuBarcode,
+            s.sku_cost AS skuCost
+        FROM WISH w
+        JOIN SKU s ON w.sku_idx = s.sku_idx
+    </select>
+
+  
+ 
+
+
+   
+</mapper>
+
+

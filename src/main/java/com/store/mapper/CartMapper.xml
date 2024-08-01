@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.store.mapper.CartMapper">
+
+
+  <select id="findAll"  resultType="com.store.dto.CartDTO">
+         SELECT 
+            c.cart_idx AS cartIdx,
+            c.customer_idx AS customerIdx,
+            c.sku_idx AS skuIdx,
+            c.sku_value AS skuValue,
+            s.sku_name AS skuName,
+            s.sku_barcode AS skuBarcode,
+            s.sku_cost AS skuCost
+        FROM CART c
+        JOIN SKU s ON c.sku_idx = s.sku_idx
+    </select>
+  
+ 
+
+
+   
+</mapper>
+
+
