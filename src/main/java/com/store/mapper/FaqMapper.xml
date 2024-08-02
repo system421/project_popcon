@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.store.mapper.FaqMapper">
+  	<resultMap id="S2C" type="FaqDTO">
+  		<id 	property="faqIdx" column="faq_idx "/>
+  		<result property="faqQ"   column="faq_q"/>
+  		<result property="faqA"   column="faq_a"/>
+  	</resultMap>
+  	
+  	<select id="findAllFaq" resultMap="S2C">
+  	
+	  		select faq_q, 
+	  			   faq_a 
+	  		  from faq
+  	</select>
+  	<select id="selectFaq" resultType="FaqDTO">
+  		  	select faq_q, 
+	  			   faq_a 
+	  		  from faq
+	  		 where faq_idx=#{faq_idx}
+  	</select>
+  </mapper>
