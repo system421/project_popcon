@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.dto.KeepDTO;
 import com.store.dto.SkuDTO;
 import com.store.service.KeepService;
-import com.store.service.MemberService;
 import com.store.service.SkuService;
 
 import org.springframework.beans.factory.annotation.Autowired;

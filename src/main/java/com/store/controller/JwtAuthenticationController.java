@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.dto.CustomerDTO;
-import com.store.dto.Member;
 import com.store.entity.Customer;
 import com.store.security.JwtTokenResponse;
 import com.store.security.JwtTokenService;

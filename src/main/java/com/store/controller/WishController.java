@@ -28,7 +28,6 @@ import com.store.dto.WishDTO;
 import com.store.entity.Cart;
 import com.store.entity.Wish;
 import com.store.service.CartService;
-import com.store.service.MemberService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
 

@@ -17,18 +17,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.store.dto.CartDTO;
-import com.store.dto.MemberDTO;
 import com.store.dto.SkuDTO;
 import com.store.entity.Cart;
 import com.store.entity.Customer;
 import com.store.entity.Sku;
 import com.store.mapper.CartMapper;
-import com.store.mapper.MemberMapper;
 import com.store.mapper.SkuMapper;
 import com.store.repository.CartRepository;
 import com.store.repository.CustomerRepository;
 import com.store.repository.SkuRepository;
-import com.store.service.MemberService;
 @Service
 public class CartServiceImpl implements CartService{
 

@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.apache.ibatis.annotations.Param;
 
 import com.store.dto.CartDTO;
-import com.store.dto.MemberDTO;
 import com.store.dto.PayOrderDTO;
 import com.store.dto.SkuDTO;
 import com.store.entity.Cart;

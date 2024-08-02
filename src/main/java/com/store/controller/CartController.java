@@ -26,7 +26,6 @@ import com.store.dto.CartDTO;
 import com.store.dto.SkuDTO;
 import com.store.entity.Cart;
 import com.store.service.CartService;
-import com.store.service.MemberService;
 import com.store.service.SkuService;
 
 import org.springframework.beans.factory.annotation.Autowired;

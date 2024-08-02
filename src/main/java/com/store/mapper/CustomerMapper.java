@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.store.dto.CustomerDTO;
-import com.store.dto.Member;
 import com.store.entity.Customer;
 
 @Mapper

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.store.dto.Sku;
+import com.store.dto.SkuDTO;
 
 @Mapper
 public interface SkuMapper {
@@ -18,7 +18,7 @@ public interface SkuMapper {
 //	int insertMember(Member member);
 //	Member registerNewMember(@Valid Member member);
 //	@Select("SELECT * FROM member")
-    List<Sku> findAll();
-    List<Sku> findByType(@Param("skutypeIdx") int skutypeIdx);
+    List<SkuDTO> findAll();
+    List<SkuDTO> findByType(@Param("skutypeIdx") int skutypeIdx);
 }
 
