@@ -13,21 +13,19 @@ import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.mapper.CartMapper;
 import com.store.repository.CartRepository;
-<<<<<<< HEAD
+
 import com.store.repository.CustomerRepository;
 import com.store.repository.SkuRepository;
 
 import lombok.AllArgsConstructor;
-=======
+
 import com.store.repository.CartItemRepository;
 import com.store.service.CartService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> d4cc65b (카트 오류 해결 (나머지는 DB 쿼리 문제))
 
 @Service
 public class CartServiceImpl implements CartService {

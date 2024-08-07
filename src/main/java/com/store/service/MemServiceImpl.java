@@ -25,8 +25,8 @@ public class MemServiceImpl implements MemService {
 	  private final CustomerRepository customerRepository;
 
 	  @Override
-	  public CustomerDTO findById(int customerId) {
-	        Customer customer = customerRepository.findByCustomerIdx(customerId);
+	  public CustomerDTO findById(int customerIdx) {
+	        Customer customer = customerRepository.findByCustomerIdx(customerIdx);
 	        return new CustomerDTO(customer);
 	    }
 	 
@@ -43,8 +43,10 @@ public class MemServiceImpl implements MemService {
 		@Override
 		public Customer findByUserID(String id) {
 			
-			return memRepository.findBycustomerId(id);
+			return customerRepository.findByCustomerId(id);
 		}
+
+		
 
 	 
 	}
