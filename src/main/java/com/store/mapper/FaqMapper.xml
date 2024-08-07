@@ -5,16 +5,23 @@
   
   <mapper namespace="com.store.mapper.FaqMapper">
   	<resultMap id="S2C" type="FaqDTO">
-  		<id 	property="faqIdx" column="faq_idx "/>
+  		<id 	property="faqIdx" column="faq_idx"/>
+  		<result property="faqtypeIdx"   column="faqtype_idx"/>
+  		<result property="faqType"   column="faq_type"/>
   		<result property="faqQ"   column="faq_q"/>
   		<result property="faqA"   column="faq_a"/>
   	</resultMap>
   	
   	<select id="findAllFaq" resultMap="S2C">
   	
-	  		select faq_q, 
-	  			   faq_a 
-	  		  from faq
+		  	select f.faq_idx, 
+		  		   t.faqtype_idx,
+				   t.faq_type,
+				   f.faq_q, 
+				   f.faq_a
+			  from faq f
+	    right join faq_type t on f.faqtype_idx = t.faqtype_idx;
+		 
   	</select>
   	<select id="selectFaq" resultType="FaqDTO">
   		  	select faq_q, 

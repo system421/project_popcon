@@ -3,6 +3,7 @@ package com.store.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,17 +21,18 @@ public class FaqController {
 		this.faqService = faqService;
 	}
 	
+	// 자주묻는질문 조회
 	@GetMapping("/faq")
-	public List<FaqDTO> findAllFaq(){
+	public ResponseEntity<List<FaqDTO>> findAllFaq(){
 		List<FaqDTO> faqlist = faqService.findAllFaq();
 		log.info("faqlist : {}", faqlist); // faqlist 로그 출력
 		if(faqlist==null) {
 			log.info("faqlist==null : {} ", faqlist);
 			System.out.println();
-			return new ArrayList<>();
+			return ResponseEntity.ok(new ArrayList<>());
 		}
 		
 		System.out.println("/faq 요청 : " + faqlist);
-		return faqlist;
+		return ResponseEntity.ok(faqlist);
 	}
 }

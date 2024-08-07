@@ -4,11 +4,23 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
   <mapper namespace="com.store.mapper.QnaMapper">
-  
-  	<select id="selectMyQna" resultType="QnaDTO">
- 			select qna_title,
- 				   qna_text
+   	<resultMap id="S2C" type="QnaDTO">
+  		<id		property="qnaIdx" column="qna_idx"/>
+  		<result property="faqtypeIdx"   column="faqtype_idx"/>
+  		<result property="customerIdx"   column="customer_idx"/>
+  		<result property="qnaTitle"   column="qna_title"/>
+  		<result property="qnaText"   column="qna_text"/>
+  		<result property="qnaDate"   column="qna_date"/>
+  	</resultMap>
+  	<select id="findMyQna" resultMap="S2C">
+ 			select qna_idx,
+ 				   faqtype_idx,
+ 				   customer_idx,
+ 				   qna_title,
+ 				   qna_text,
+ 				   qna_date
  			  from CUSTOMER_QNA
+ 			 
   	</select>
   	<insert id="postMyQna" parameterType="QnaDTO">
   		

@@ -1,10 +1,15 @@
 package com.store.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +45,14 @@ public class CustomerQna {
 	String qnaText;
 	
 	@Column(name="qna_date")
-	String qnaDate;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
+	LocalDateTime qnaDate;
+	
+	@PrePersist // 엔티티가 저장되기 전에 호출
+	private void updateTime() {
+        this.qnaDate = LocalDateTime.now(); // qnaDate에도 현재 시간 설정
+        System.out.println("qnaDate:" + qnaDate);
+    }
+	
 	
 }
