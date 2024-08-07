@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.store.dto.CartDTO;
 import com.store.dto.KeepDTO;
-import com.store.entity.Cart;
+import com.store.entity.CartEntity;
 import com.store.entity.Customer;
 import com.store.entity.Keep;
 import com.store.entity.Sku;

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.dto.CartDTO;
 import com.store.dto.PayOrderDTO;
 import com.store.dto.SkuDTO;
-import com.store.entity.Cart;
+import com.store.entity.CartEntity;
 import com.store.entity.PayOrder;
 import com.store.service.CartService;
 import com.store.service.PayOrderService;

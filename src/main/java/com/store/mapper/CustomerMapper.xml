@@ -22,11 +22,8 @@
 	</resultMap>
 
 
-  <select id="findById"  resultMap="xxx" parameterType="string">
-       SELECT * 
-       FROM customer
-       where customer_id = #{customer_id}
-       
+ <select id="findById" parameterType="int" resultType="com.store.dto.CustomerDTO">
+        SELECT * FROM customers WHERE customer_idx = #{customerIdx}
     </select>
     <select id="authenticate" resultMap="xxx" parameterType="hashmap">
       select *

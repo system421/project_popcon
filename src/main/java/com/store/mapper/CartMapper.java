@@ -15,6 +15,7 @@ import com.store.dto.SkuDTO;
 @Mapper
 public interface CartMapper {
 
-	 List<CartDTO> findAll();
+	 CartDTO findCartByCustomerId(@Param("customerIdx") int customerIdx);
+	
 }
 

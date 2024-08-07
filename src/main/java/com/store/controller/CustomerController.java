@@ -16,19 +16,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.dto.CustomerDTO;
 import com.store.entity.Customer;
 import com.store.service.MemService;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@AllArgsConstructor
 public class CustomerController {
 
 	
-	@Autowired
-    private MemService memService;
+	private final MemService memService;
 
+	
+	@GetMapping("/{customerIdx}")
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable int customerIdx) {
+        CustomerDTO customerDTO = memService.findById(customerIdx);
+        return ResponseEntity.ok(customerDTO);
+    }
+	
     @PostMapping("/signup")
     public ResponseEntity<?> registerMem(@RequestBody Customer mem) {
     	

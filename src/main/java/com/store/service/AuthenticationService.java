@@ -10,6 +10,6 @@ public interface AuthenticationService {
 	
 	  public CustomerDTO authenticate(Map<String, String> map);
 	  
-	  public CustomerDTO findById(String userid);
+	  public CustomerDTO findById(int customerIdx);
 	  
 }

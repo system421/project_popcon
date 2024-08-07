@@ -1,85 +1,47 @@
 package com.store.controller;
 
 
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.store.dto.CartDTO;
+import com.store.entity.CartEntity;
+import com.store.service.CartService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.store.dto.CartDTO;
-import com.store.dto.SkuDTO;
-import com.store.entity.Cart;
-import com.store.service.CartService;
-import com.store.service.SkuService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CartController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
-	
-	  @Autowired
-	CartService cartService;
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
-    
-    @GetMapping("/Cart")
-    public List<CartDTO> listCart() {
-        return cartService.findAll();
-    }
-   
-	
-	@PostMapping("/Cart/add")
-    public ResponseEntity<Cart> addToCart(@RequestBody CartDTO cartDto) {
-        Cart newCartItem = cartService.addToCart(cartDto);
-        return ResponseEntity.ok(newCartItem);
-    }
+	 @Autowired
+	    private CartService cartService;
 
-    @PutMapping("/Cart/update")
-    public ResponseEntity<Cart> updateCart(@RequestBody CartDTO cartDto) {
-        Cart updatedCartItem = cartService.updateCart(cartDto);
-        return ResponseEntity.ok(updatedCartItem);
-    }
+	    @GetMapping("/{customerIdx}")
+	    public ResponseEntity<CartDTO> getCartByCustomerId(@PathVariable int customerIdx) {
+	        CartDTO cartDTO = cartService.getCartByCustomerId(customerIdx);
+	        return ResponseEntity.ok(cartDTO);
+	    }
 
-    @DeleteMapping("/Cart/delete/{cartIdx}")
-    public ResponseEntity<Void> deleteFromCart(@PathVariable int cartIdx) {
-        cartService.deleteFromCart(cartIdx);
-        return ResponseEntity.noContent().build();
-    }
+	    @PostMapping
+	    public ResponseEntity<CartDTO> createCart(@RequestBody CartDTO cartDTO) {
+	        CartDTO createdCart = cartService.createCart(cartDTO);
+	        return ResponseEntity.ok(createdCart);
+	    }
 
+	    @PutMapping("/{cartIdx}")
+	    public ResponseEntity<CartDTO> updateCart(@PathVariable int cartIdx, @RequestBody CartDTO cartDTO) {
+	        cartDTO.setCartIdx(cartIdx);
+	        CartDTO updatedCart = cartService.updateCart(cartDTO);
+	        return ResponseEntity.ok(updatedCart);
+	    }
 
-
+	    @DeleteMapping("/{cartIdx}")
+	    public ResponseEntity<Void> deleteCart(@PathVariable int cartIdx) {
+	        cartService.deleteCart(cartIdx);
+	        return ResponseEntity.noContent().build();
+	    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

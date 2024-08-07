@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import com.store.dto.CartDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
-import com.store.entity.Cart;
+import com.store.entity.CartEntity;
 import com.store.entity.Customer;
 import com.store.entity.Sku;
 import com.store.entity.Wish;

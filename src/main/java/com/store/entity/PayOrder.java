@@ -42,7 +42,7 @@ public class PayOrder {
 
 	    @ManyToOne
 	    @JoinColumn(name = "cart_idx", nullable = false)
-	    private Cart cart;
+	    private CartEntity cart;
 
 	    @Column(name = "order_date", nullable = false)
 	    @Temporal(TemporalType.TIMESTAMP)

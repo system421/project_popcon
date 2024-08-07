@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import com.store.dto.CartDTO;
 import com.store.dto.PayOrderDTO;
 import com.store.dto.SkuDTO;
-import com.store.entity.Cart;
+import com.store.entity.CartEntity;
 import com.store.entity.PayOrder;
 
 public interface PayOrderService {

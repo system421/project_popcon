@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import com.store.dto.CartDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
-import com.store.entity.Cart;
+import com.store.entity.CartEntity;
 import com.store.entity.Wish;
 
 public interface WishService {
