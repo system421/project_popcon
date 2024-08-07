@@ -4,41 +4,19 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.store.mapper.CartMapper">
- <resultMap id="CartResultMap" type="com.store.dto.CartDTO">
+   <select id="findCartsByCustomerIdx" resultMap="CartResultMap">
+        SELECT * FROM cart WHERE customer_idx = #{customerIdx}
+    </select>
+
+    <resultMap id="CartResultMap" type="com.store.dto.CartDTO">
         <id property="cartIdx" column="cart_idx"/>
         <result property="customerIdx" column="customer_idx"/>
-        <collection property="cartItems" ofType="com.store.dto.CartDTO.CartItemDTO">
-            <id property="cartItemIdx" column="cart_item_idx"/>
-            <result property="skuIdx" column="sku_idx"/>
-            <result property="skuValue" column="sku_value"/>
-            <result property="skuName" column="sku_name"/>
-            <result property="skuBarcode" column="sku_barcode"/>
-            <result property="skuCost" column="sku_cost"/>
-        </collection>
+        <collection property="cartItems" ofType="com.store.dto.CartDTO.CartItemDTO" column="cart_idx" select="findCartItemsByCartIdx"/>
     </resultMap>
 
-  <select id="findCartByCustomerId" resultMap="CartResultMap">
-        SELECT
-            c.cart_idx,
-            c.customer_idx,
-            ci.cart_item_idx,
-            ci.sku_idx,
-            ci.sku_value,
-            s.sku_name,
-            s.sku_barcode,
-            s.sku_cost
-        FROM
-            Cart c
-        LEFT JOIN
-            CartItem ci ON c.cart_idx = ci.cart_idx
-        LEFT JOIN
-            Sku s ON ci.sku_idx = s.sku_idx
-        WHERE
-            c.customer_idx = #{customerIdx}
+    <select id="findCartItemsByCartIdx" resultType="com.store.dto.CartItemDTO">
+        SELECT * FROM cart_item WHERE cart_idx = #{cartIdx}
     </select>
-  
- 
-
 
    
 </mapper>

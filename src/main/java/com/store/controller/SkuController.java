@@ -21,15 +21,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.dto.CartDTO;
+import com.store.dto.CartItemDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
 import com.store.entity.CartEntity;
+import com.store.entity.CartItemEntity;
 import com.store.entity.Wish;
 import com.store.service.CartService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class SkuController {
@@ -42,6 +45,7 @@ public class SkuController {
     CartService cartService;
 	@Autowired
     WishService wishService;
+	
     public SkuController(SkuService skuService) {
         this.skuService = skuService;
     }
@@ -57,10 +61,11 @@ public class SkuController {
 		List<SkuDTO> list = skuService.findByType(skutypeIdx);
 		return skuService.findByType(skutypeIdx);
 	    }
-	@PostMapping("/Sku/addToCart")
-    public CartEntity addToCart(@RequestBody CartDTO cartDto) {
-        return cartService.addToCart(cartDto);
-    }
+	  @PostMapping("/Sku/addToCart")
+	    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
+	        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
+	        return ResponseEntity.ok(cartItemEntity);
+	    }
 
     @PostMapping("/Sku/addToWish")
     public Wish addToWish(@RequestBody WishDTO wishDto) {

@@ -4,6 +4,9 @@ package com.store.entity;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.persistence.*;
 
 @AllArgsConstructor
@@ -13,13 +16,15 @@ import javax.persistence.*;
 @Setter
 @ToString
 @Entity
+@Table(name = "cart")
 public class CartEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, name = "cart_idx")
-	private int cartIdx;
+	    @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private int cartIdx;
 
-	@ManyToOne
-	@JoinColumn(name = "customer_idx", nullable = false)
-	private Customer customer;
+	    @Column(name = "customer_idx")
+	    private int customerIdx;
+
+	    private LocalDateTime createdDate;
+	    private LocalDateTime updatedDate;
 }

@@ -8,45 +8,38 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.store.dto.CartDTO;
+import com.store.dto.CartItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.mapper.CartMapper;
-import com.store.repository.CartItemRepository;
 import com.store.repository.CartRepository;
+<<<<<<< HEAD
 import com.store.repository.CustomerRepository;
 import com.store.repository.SkuRepository;
 
 import lombok.AllArgsConstructor;
+=======
+import com.store.repository.CartItemRepository;
+import com.store.service.CartService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+>>>>>>> d4cc65b (카트 오류 해결 (나머지는 DB 쿼리 문제))
 
 @Service
-@AllArgsConstructor
 public class CartServiceImpl implements CartService {
 
-    private final CartMapper cartMapper;
     private final CartRepository cartRepository;
-    private final CustomerRepository customerRepository;
-    private final SkuRepository skuRepository;
     private final CartItemRepository cartItemRepository;
+    private final CartMapper cartMapper;
 
-    @Override
-    public CartDTO findById(Integer id) {
-        // onetomany, manytoone 관계보다는, 로직에서 따로 CRUD 하여 조합하여 처리하는 방식으로 현업에서 더 사용.
-        // 이유는, 성능 이슈 (JPA N+1 문제)가 발생할 수 있기 때문입니다.
-        CartEntity cartEntity = cartRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid cart ID: " + id));
-        List<CartItemEntity> cartItemEntities = cartItemRepository.findByCartIdx(id);
-
-        // 이제부터는, 프리젠테이션 레이어에서 사용할 DTO로 변환하는 작업을 해야 합니다.
-        return CartDTO.of(cartEntity, cartItemEntities);
-    }
-
-    @Override
-    public List<CartDTO> findAll() {
-        List<CartDTO> carts = cartMapper.findAll();
-        if (carts == null) {
-            throw new NullPointerException("Cart list is null");
-        }
-        return carts;
+    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper) {
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
+        this.cartMapper = cartMapper;
     }
 
     @Override
@@ -54,55 +47,70 @@ public class CartServiceImpl implements CartService {
     public CartDTO createCart(CartDTO cartDTO) {
         CartEntity cartEntity = new CartEntity();
         cartEntity.setCustomerIdx(cartDTO.getCustomerIdx());
-        cartRepository.save(cartEntity);
+        cartEntity.setCreatedDate(LocalDateTime.now());
+        cartEntity.setUpdatedDate(LocalDateTime.now());
+        cartEntity = cartRepository.save(cartEntity);
 
-        List<CartItemEntity> cartItemEntities = cartDTO.getCartItems().stream()
-                .map(itemDTO -> {
-                    CartItemEntity itemEntity = new CartItemEntity();
-                    itemEntity.setCart(cartEntity);
-                    itemEntity.setSkuIdx(itemDTO.getSkuIdx());
-                    itemEntity.setSkuValue(itemDTO.getSkuValue());
-                    itemEntity.setSkuName(itemDTO.getSkuName());
-                    itemEntity.setSkuBarcode(itemDTO.getSkuBarcode());
-                    itemEntity.setSkuCost(itemDTO.getSkuCost());
-                    return itemEntity;
-                }).collect(Collectors.toList());
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        for (CartItemDTO cartItemDTO : cartDTO.getCartItems()) {
+            CartItemEntity cartItemEntity = new CartItemEntity();
+            cartItemEntity.setCartIdx(cartEntity.getCartIdx());
+            cartItemEntity.setSkuIdx(cartItemDTO.getSkuIdx());
+            cartItemEntity.setSkuValue(cartItemDTO.getSkuValue());
+            cartItems.add(cartItemEntity);
+        }
 
-        cartItemRepository.saveAll(cartItemEntities);
-
-        return CartDTO.of(cartEntity, cartItemEntities);
+        cartItemRepository.saveAll(cartItems);
+        
+        return CartDTO.of(cartEntity, cartItems);
     }
 
     @Override
     @Transactional
-    public CartDTO updateCart(CartDTO cartDTO) {
-        CartEntity cartEntity = cartRepository.findById(cartDTO.getCartIdx()).orElseThrow();
+    public CartDTO updateCart(int cartIdx, CartDTO cartDTO) {
+        CartEntity cartEntity = cartRepository.findById(cartIdx)
+            .orElseThrow(() -> new RuntimeException("Cart not found"));
+        
         cartEntity.setCustomerIdx(cartDTO.getCustomerIdx());
+        cartEntity.setUpdatedDate(LocalDateTime.now());
         cartRepository.save(cartEntity);
 
-        cartItemRepository.deleteByCartId(cartDTO.getCartIdx());
+        cartItemRepository.deleteByCartIdx(cartIdx);
 
-        List<CartItemEntity> cartItemEntities = cartDTO.getCartItems().stream()
-                .map(itemDTO -> {
-                    CartItemEntity itemEntity = new CartItemEntity();
-                    itemEntity.setCart(cartEntity);
-                    itemEntity.setSkuIdx(itemDTO.getSkuIdx());
-                    itemEntity.setSkuValue(itemDTO.getSkuValue());
-                    itemEntity.setSkuName(itemDTO.getSkuName());
-                    itemEntity.setSkuBarcode(itemDTO.getSkuBarcode());
-                    itemEntity.setSkuCost(itemDTO.getSkuCost());
-                    return itemEntity;
-                }).collect(Collectors.toList());
+        List<CartItemEntity> cartItems = new ArrayList<>();
+        for (CartItemDTO cartItemDTO : cartDTO.getCartItems()) {
+            CartItemEntity cartItemEntity = new CartItemEntity();
+            cartItemEntity.setCartIdx(cartIdx);
+            cartItemEntity.setSkuIdx(cartItemDTO.getSkuIdx());
+            cartItemEntity.setSkuValue(cartItemDTO.getSkuValue());
+            cartItems.add(cartItemEntity);
+        }
 
-        cartItemRepository.saveAll(cartItemEntities);
-
-        return CartDTO.of(cartEntity, cartItemEntities);
+        cartItemRepository.saveAll(cartItems);
+        
+        return CartDTO.of(cartEntity, cartItems);
     }
 
     @Override
     @Transactional
     public void deleteCart(int cartIdx) {
-        cartItemRepository.deleteByCartId(cartIdx);
+        cartItemRepository.deleteByCartIdx(cartIdx);
         cartRepository.deleteById(cartIdx);
+    }
+
+    @Override
+    public List<CartDTO> getCartsByCustomerIdx(int customerIdx) {
+        return cartMapper.findCartsByCustomerIdx(customerIdx);
+    }
+
+    @Override
+    @Transactional
+    public CartItemEntity addToCart(CartItemDTO cartItemDTO) {
+        CartItemEntity cartItemEntity = new CartItemEntity();
+        cartItemEntity.setCartIdx(cartItemDTO.getCartIdx());
+        cartItemEntity.setSkuIdx(cartItemDTO.getSkuIdx());
+        cartItemEntity.setSkuValue(cartItemDTO.getSkuValue());
+
+        return cartItemRepository.save(cartItemEntity);
     }
 }

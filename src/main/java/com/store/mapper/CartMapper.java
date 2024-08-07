@@ -10,12 +10,13 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.store.dto.CartDTO;
+import com.store.dto.CustomerDTO;
 import com.store.dto.SkuDTO;
 
 @Mapper
 public interface CartMapper {
 
-	 CartDTO findCartByCustomerId(@Param("customerIdx") int customerIdx);
+	 List<CartDTO> findCartsByCustomerIdx(int customerIdx);
 	
 }
 

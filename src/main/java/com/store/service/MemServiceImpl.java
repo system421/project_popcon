@@ -22,26 +22,23 @@ import lombok.AllArgsConstructor;
 @Transactional 
 public class MemServiceImpl implements MemService {
 
-	 @Autowired
-	    private CustomerRepository memRepository;
+	  private final CustomerRepository customerRepository;
 
-	 private final CustomerMapper customerMapper;
-
-	    @Override
-	    public CustomerDTO findById(int customerIdx) {
-	        return customerMapper.findById(customerIdx);
+	  @Override
+	  public CustomerDTO findById(int customerId) {
+	        Customer customer = customerRepository.findByCustomerIdx(customerId);
+	        return new CustomerDTO(customer);
 	    }
-
 	 
 	    @Override
 	    public Customer registerMem(Customer mem) {
-	        if (memRepository.findBycustomerId(mem.getCustomerId()) != null) {
-	            throw new IllegalArgumentException("User ID already exists");
-	        }
-	        if (memRepository.findBycustomerEmail(mem.getCustomerEmail()) != null) {
-	            throw new IllegalArgumentException("Email already exists");
-	        }
-	        return memRepository.save(mem);
+//	        if (memRepository.findBycustomerId(mem.getCustomerId()) != null) {
+//	            throw new IllegalArgumentException("User ID already exists");
+//	        }
+//	        if (memRepository.findBycustomerEmail(mem.getCustomerEmail()) != null) {
+//	            throw new IllegalArgumentException("Email already exists");
+//	        }
+	        return customerRepository.save(mem);
 	    }
 		@Override
 		public Customer findByUserID(String id) {

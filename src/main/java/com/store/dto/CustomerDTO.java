@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.apache.ibatis.type.Alias;
+
+import com.store.entity.Customer;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,18 +30,34 @@ import lombok.ToString;
 public class CustomerDTO {
 	
 	
-	int customerIdx;
-	String customerId;
-	String customerPw;
-	String customerName;
-	String customerPhone;
-	Date customerDate;
-    int customerGender;
-    Timestamp customerTime;
-	String customerAdd;
-	String customerAddMore;
-	String customerEmail;
-	String customerRate;
-	String customerRole;
+	  private int customerIdx;
+	    private String customerId;
+	    private String customerPw;
+	    private String customerName;
+	    private String customerPhone;
+	    private Date customerDate;
+	    private int customerGender;
+	    private Timestamp customerTime;
+	    private String customerAdd;
+	    private String customerAddMore;
+	    private String customerEmail;
+	    private String customerRate;
+	    private String customerRole;
+
+	    public CustomerDTO(Customer customer) {
+	        this.customerIdx = customer.getCustomerIdx();
+	        this.customerId = customer.getCustomerId();
+	        this.customerPw = customer.getCustomerPw();
+	        this.customerName = customer.getCustomerName();
+	        this.customerPhone = customer.getCustomerPhone();
+	        this.customerDate = customer.getCustomerDate();
+	        this.customerGender = customer.getCustomerGender();
+	        this.customerTime = customer.getCustomerTime();
+	        this.customerAdd = customer.getCustomerAdd();
+	        this.customerAddMore = customer.getCustomerAddMore();
+	        this.customerEmail = customer.getCustomerEmail();
+	        this.customerRate = customer.getCustomerRate();
+	        this.customerRole = customer.getCustomerRole();
+	    }
 	
 }

@@ -22,14 +22,13 @@ import java.util.Set;
 public class Sku {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sku_idx")
+    @Column(name = "sku_idx", nullable = false)
     private int skuIdx;
-
-    @Column(name = "sku_name")
+    @Column(name = "sku_name", nullable = false)
     private String skuName;
-    @Column(name = "sku_cost")
+    @Column(name = "sku_cost", nullable = false)
     private int skuCost;
-    @Column(name = "sku_barcode")
+    @Column(name = "sku_barcode", nullable = false)
     private String skuBarcode;
 
   

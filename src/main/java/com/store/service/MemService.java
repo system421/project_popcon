@@ -15,8 +15,12 @@ import com.store.repository.CustomerRepository;
 @Service
 public interface MemService {
 	 Customer registerMem(Customer mem);
+<<<<<<< HEAD
 	 CustomerDTO findById(@Param("customerIdx") int customerIdx);
 	 Customer findByUserID(String id);
 
+=======
+	  CustomerDTO findById(int customerId);
+>>>>>>> d4cc65b (카트 오류 해결 (나머지는 DB 쿼리 문제))
     }
 
