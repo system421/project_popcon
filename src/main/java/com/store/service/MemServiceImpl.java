@@ -43,6 +43,11 @@ public class MemServiceImpl implements MemService {
 	        }
 	        return memRepository.save(mem);
 	    }
+		@Override
+		public Customer findByUserID(String id) {
+			
+			return memRepository.findBycustomerId(id);
+		}
 
 	 
 	}

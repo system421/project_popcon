@@ -2,18 +2,16 @@ package com.store.controller;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.dto.CustomerDTO;
@@ -57,6 +55,19 @@ public class CustomerController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 //    	return ResponseEntity.ok(null);
+    }
+    @GetMapping("/check-id")
+    public ResponseEntity<Map<String, Boolean>> checkId(@RequestParam String userid) {
+      boolean isUnique = true;
+      Customer dto = memService.findByUserID(userid);
+      if(dto != null) {
+    	  isUnique = false;
+      }
+      log.info("아이디확인");
+      log.info(userid);
+      Map<String, Boolean> response = new HashMap<>();
+      response.put("isUnique", isUnique);
+      return ResponseEntity.ok(response);
     }
     
 }
