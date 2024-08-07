@@ -1,5 +1,7 @@
 package com.store.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 import org.apache.ibatis.type.Alias;
 
 import lombok.AllArgsConstructor;
@@ -22,7 +24,9 @@ public class QnaDTO {
 	private int faqtypeIdx;
 	private int customerIdx;
 	
+	@NotEmpty(message="제목을 입력하세요.")
 	String qnaTitle;
+	@NotEmpty(message="내용을 입력하세요.")
 	String qnaText;
 	String qnaDate;
 	

@@ -16,11 +16,10 @@ public class FaqServiceImpl implements FaqService {
 		this.faqMapper=faqMapper;
 	}
 	
-		@Override
-		public List<FaqDTO> findAllFaq() {
-//			List<FaqDTO> faqList=faqMapper.findAllFaq();
-//			System.out.println("FaqServiceImpl : " + faqMapper);
-			return faqMapper.findAllFaq();
-		}
+	//	자주묻는질문 Faq 조회
+	@Override
+	public List<FaqDTO> findAllFaq() {
+		return faqMapper.findAllFaq();
+	}
 
 }

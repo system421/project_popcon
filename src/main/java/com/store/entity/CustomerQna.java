@@ -44,15 +44,16 @@ public class CustomerQna {
 	@Column(nullable=false, name="qna_text")
 	String qnaText;
 	
+//	타임스탬프는 SQL로 저장
 	@Column(name="qna_date")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
 	LocalDateTime qnaDate;
 	
-	@PrePersist // 엔티티가 저장되기 전에 호출
-	private void updateTime() {
-        this.qnaDate = LocalDateTime.now(); // qnaDate에도 현재 시간 설정
-        System.out.println("qnaDate:" + qnaDate);
-    }
+//	@PrePersist // 엔티티가 저장되기 전에 호출
+//	private void updateTime() {
+//        this.qnaDate = LocalDateTime.now(); // qnaDate에도 현재 시간 설정
+//        System.out.println("qnaDate:" + qnaDate);
+//    }
 	
 	
 }

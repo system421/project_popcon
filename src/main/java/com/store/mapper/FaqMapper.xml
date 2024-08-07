@@ -12,6 +12,7 @@
   		<result property="faqA"   column="faq_a"/>
   	</resultMap>
   	
+  	<!-- 자주묻는질문 FAQ 조회 -->
   	<select id="findAllFaq" resultMap="S2C">
   	
 		  	select f.faq_idx, 
@@ -23,10 +24,5 @@
 	    right join faq_type t on f.faqtype_idx = t.faqtype_idx;
 		 
   	</select>
-  	<select id="selectFaq" resultType="FaqDTO">
-  		  	select faq_q, 
-	  			   faq_a 
-	  		  from faq
-	  		 where faq_idx=#{faq_idx}
-  	</select>
+
   </mapper>
