@@ -24,8 +24,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
 	@Override
-	public CustomerDTO findById(int customerIdx) {
-		return customerMapper.findById(customerIdx);
+	public CustomerDTO findById(String id) {
+		return customerMapper.findByUserId(id);
 	}
 
 }

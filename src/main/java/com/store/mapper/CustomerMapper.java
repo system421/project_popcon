@@ -17,5 +17,6 @@ public interface CustomerMapper {
 
 	 CustomerDTO findById(@Param("customerIdx") int customerIdx);
     public CustomerDTO authenticate(Map<String, String> map);
+    CustomerDTO findByUserId(String id);
 }
 

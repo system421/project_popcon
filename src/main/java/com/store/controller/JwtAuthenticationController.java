@@ -43,18 +43,17 @@ public class JwtAuthenticationController {
     public ResponseEntity<JwtTokenResponse> generateToken(
             @RequestBody Map<String, String> jwtTokenRequest) {
 
-        logger.info("logger: jwtTokenRequest: {}", jwtTokenRequest);
+    	logger.info("logger: jwtTokenRequest: {}", jwtTokenRequest);
 
-        int customerIdx = Integer.parseInt(jwtTokenRequest.get("customerIdx"));
-        CustomerDTO customer = authenticationService.findById(customerIdx);
-        logger.info("logger: customer: {}", customer);
-
-        PasswordEncoder passwordEncoder = passwordEncoder(); 
-        UsernamePasswordAuthenticationToken authenticationToken = null; 
+    	CustomerDTO customer = authenticationService.findById(jwtTokenRequest.get("userid"));
+    	
+    	PasswordEncoder passwordEncoder = passwordEncoder(); 
+    	UsernamePasswordAuthenticationToken authenticationToken=null; 
 
         if (customer != null && passwordEncoder.matches(jwtTokenRequest.get("password"), customer.getCustomerPw())) { // 일치하는 사용자와 비번이 일치하면
             List<GrantedAuthority> roles = new ArrayList<>();
             roles.add(new SimpleGrantedAuthority("USER")); // 권한 부여, 현재는 모든 사용자권한을 USER로 지정한다.
+         
             authenticationToken = new UsernamePasswordAuthenticationToken(
                 new Customer(
                     customer.getCustomerIdx(),
@@ -75,7 +74,7 @@ public class JwtAuthenticationController {
                 roles
             ); 
         }
-
+        
         String token = tokenService.generateToken(authenticationToken);
         return ResponseEntity.ok(new JwtTokenResponse(token));
     }

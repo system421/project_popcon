@@ -23,7 +23,11 @@
 
 
  <select id="findById" parameterType="int" resultType="com.store.dto.CustomerDTO">
-        SELECT * FROM customers WHERE customer_idx = #{customerIdx}
+        SELECT * FROM customer WHERE customer_idx = #{customerIdx}
+    </select>
+    
+    <select id="findByUserId" parameterType="string" resultType="com.store.dto.CustomerDTO">
+        SELECT * FROM customer WHERE customer_id = #{customer_id}
     </select>
     <select id="authenticate" resultMap="xxx" parameterType="hashmap">
       select *
