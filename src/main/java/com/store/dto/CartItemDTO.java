@@ -16,10 +16,14 @@ public class CartItemDTO {
     private int skuIdx;
     private int skuValue; // 수량
 
+
     public static CartItemDTO of(CartItemEntity itemEntity) {
+        if (itemEntity == null) {
+            return null;
+        }
         CartItemDTO item = new CartItemDTO();
         item.setCartItemIdx(itemEntity.getCartItemIdx());
-        item.setCartIdx(itemEntity.getCartIdx());  // 추가된 필드 설정
+        item.setCartIdx(itemEntity.getCart().getCartIdx());  // 추가된 필드 설정
         item.setSkuIdx(itemEntity.getSkuIdx());
         item.setSkuValue(itemEntity.getSkuValue());
         return item;

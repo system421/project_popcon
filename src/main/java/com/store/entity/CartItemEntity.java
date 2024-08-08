@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,13 +24,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "cart_item")
 public class CartItemEntity {
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    @Column(name="cart_item_idx")
-	    private int cartItemIdx;
-	    @Column(name = "cart_idx")
-	    private int cartIdx;
-	    @Column(name = "sku_idx")
-	    private int skuIdx;
-	    private int skuValue;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int cartItemIdx;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_idx", nullable = false)
+    @JsonBackReference
+    private CartEntity cart;
+
+    @Column(name = "sku_idx")
+    private int skuIdx;
+
+    private int skuValue;
+	    
 }
