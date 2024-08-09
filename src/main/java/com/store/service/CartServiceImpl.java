@@ -52,37 +52,26 @@ public class CartServiceImpl implements CartService {
         return CartDTO.of(cartEntity, cartItems);
     }
 
+
     @Override
-    @Transactional
-    public CartDTO updateCart(int cartIdx, CartDTO cartDTO) {
-        CartEntity cartEntity = cartRepository.findById(cartIdx)
-            .orElseThrow(() -> new RuntimeException("Cart not found"));
-        
-        cartEntity.setCustomerIdx(cartDTO.getCustomerIdx());
-        cartEntity.setUpdatedDate(LocalDateTime.now());
-        cartRepository.save(cartEntity);
+    public CartItemDTO updateCartItemQuantity(int cartItemIdx, int skuValue) {
+        CartItemEntity cartItemEntity = cartItemRepository.findById(cartItemIdx)
+                .orElseThrow(() -> new RuntimeException("CartItem not found"));
 
-        cartItemRepository.deleteByCartCartIdx(cartIdx);
 
-        List<CartItemEntity> cartItems = new ArrayList<>();
-        for (CartItemDTO cartItemDTO : cartDTO.getCartItems()) {
-            CartItemEntity cartItemEntity = new CartItemEntity();
-            cartItemEntity.setCart(cartEntity);
-            cartItemEntity.setSkuIdx(cartItemDTO.getSkuIdx());
-            cartItemEntity.setSkuValue(cartItemDTO.getSkuValue());
-            cartItems.add(cartItemEntity);
-        }
+        cartItemEntity.setSkuValue(skuValue);
+        cartItemEntity = cartItemRepository.save(cartItemEntity);
 
-        cartItemRepository.saveAll(cartItems);
-        
-        return CartDTO.of(cartEntity, cartItems);
+        return CartItemDTO.of(cartItemEntity);
+
     }
 
     @Override
     @Transactional
-    public void deleteCart(int cartIdx) {
-        cartItemRepository.deleteByCartCartIdx(cartIdx);
-        cartRepository.deleteById(cartIdx);
+
+    public void deleteCartItem(int cartItemIdx) {
+        cartItemRepository.deleteById(cartItemIdx);
+
     }
 
     @Override
@@ -114,5 +103,11 @@ public class CartServiceImpl implements CartService {
             cartItemEntity.setSkuValue(1); // Set initial count to 1
             return cartItemRepository.save(cartItemEntity);
         }
+
+    }
+    @Override
+    public List<CartItemDTO> findAll() {
+        return cartMapper.findAll();
+
     }
 }

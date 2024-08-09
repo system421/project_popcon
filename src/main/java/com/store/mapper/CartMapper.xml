@@ -15,9 +15,27 @@
     </resultMap>
 
     <select id="findCartItemsByCartIdx" resultType="com.store.dto.CartItemDTO">
-        SELECT * FROM cart_item WHERE cart_idx = #{cartIdx}
+         SELECT 
+            ci.cart_item_idx AS cartItemIdx,
+            ci.sku_value AS skuValue,
+            ci.sku_idx AS skuIdx,
+            s.sku_name AS skuName,
+            s.sku_cost AS skuCost
+        FROM cart_item ci
+        JOIN sku s ON ci.sku_idx = s.sku_idx
+        WHERE ci.cart_idx = #{cartIdx}
     </select>
-
+  <select id="findAll" resultType="com.store.dto.CartItemDTO">
+        SELECT 
+            ci.cart_item_idx AS cartItemIdx,
+            ci.cart_idx AS cartIdx,
+            ci.sku_value AS skuValue,
+            ci.sku_idx AS skuIdx,
+            s.sku_name AS skuName,
+            s.sku_cost AS skuCost
+        FROM cart_item ci
+        JOIN sku s ON ci.sku_idx = s.sku_idx
+    </select>
    
 </mapper>
 

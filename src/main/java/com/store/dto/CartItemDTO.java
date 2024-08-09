@@ -15,6 +15,8 @@ public class CartItemDTO {
     private int cartIdx;  // 추가된 필드
     private int skuIdx;
     private int skuValue; // 수량
+    private String skuName;
+    private Integer skuCost;
 
 
     public static CartItemDTO of(CartItemEntity itemEntity) {

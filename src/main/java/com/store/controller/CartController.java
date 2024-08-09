@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CartController {
@@ -23,14 +24,16 @@ public class CartController {
         return ResponseEntity.ok(cartService.createCart(cartDTO));
     }
 
-    @PutMapping("/Cart/{cartIdx}")
-    public ResponseEntity<CartDTO> updateCart(@PathVariable int cartIdx, @RequestBody CartDTO cartDTO) {
-        return ResponseEntity.ok(cartService.updateCart(cartIdx, cartDTO));
+    @PutMapping("/cartitem/{cartItemIdx}/quantity")
+    public ResponseEntity<CartItemDTO> updateCartItemQuantity(@PathVariable int cartItemIdx, @RequestBody Map<String, Integer> updateRequest) {
+        int newQuantity = updateRequest.get("skuValue");
+        CartItemDTO updatedCartItem = cartService.updateCartItemQuantity(cartItemIdx, newQuantity);
+        return ResponseEntity.ok(updatedCartItem);
     }
 
-    @DeleteMapping("/Cart/{cartIdx}")
-    public ResponseEntity<Void> deleteCart(@PathVariable int cartIdx) {
-        cartService.deleteCart(cartIdx);
+    @DeleteMapping("/cartitem/{cartItemIdx}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable int cartItemIdx) {
+        cartService.deleteCartItem(cartItemIdx);
         return ResponseEntity.noContent().build();
     }
 
@@ -40,8 +43,12 @@ public class CartController {
     }
 
     @PostMapping("/sku/addToCart")
-    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
+    public ResponseEntity<CartItemDTO> addToCart(@RequestBody CartItemDTO cartItemDTO) {
         CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
-        return ResponseEntity.ok(cartItemEntity);
+        return ResponseEntity.ok(CartItemDTO.of(cartItemEntity));
+    }
+    @GetMapping("/cart/items")
+    public ResponseEntity<List<CartItemDTO>> findAll() {
+        return ResponseEntity.ok(cartService.findAll());
     }
 }
