@@ -44,6 +44,12 @@ public class CustomerQna {
 	@Column(nullable=false, name="qna_text")
 	String qnaText;
 	
+	@Column(name="qna_picture")
+	String qnaPicture;
+	
+	@Column(name="qna_image")
+	String qnaImage;
+	
 //	타임스탬프는 SQL로 저장
 	@Column(name="qna_date")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
