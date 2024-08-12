@@ -62,16 +62,3 @@ public class WishController {
         return ResponseEntity.noContent().build();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -43,7 +43,7 @@ public class CustomerDTO {
 	    private String customerEmail;
 	    private String customerRate;
 	    private String customerRole;
-
+	    private int cartIdx;
 	    public CustomerDTO(Customer customer) {
 	        this.customerIdx = customer.getCustomerIdx();
 	        this.customerId = customer.getCustomerId();
@@ -58,6 +58,7 @@ public class CustomerDTO {
 	        this.customerEmail = customer.getCustomerEmail();
 	        this.customerRate = customer.getCustomerRate();
 	        this.customerRole = customer.getCustomerRole();
+	        this.cartIdx = customer.getCart().getCartIdx();
 	    }
 	
 }

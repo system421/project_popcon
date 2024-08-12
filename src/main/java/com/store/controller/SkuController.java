@@ -27,6 +27,7 @@ import com.store.dto.WishDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.entity.Wish;
+import com.store.repository.SkuRepository;
 import com.store.service.CartService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
@@ -45,7 +46,9 @@ public class SkuController {
     CartService cartService;
 	@Autowired
     WishService wishService;
-	
+	@Autowired
+	private SkuRepository skuRepository;
+	 
     public SkuController(SkuService skuService) {
         this.skuService = skuService;
     }
@@ -67,8 +70,9 @@ public class SkuController {
 	        return ResponseEntity.ok(cartItemEntity);
 	    }
 
-    @PostMapping("/Sku/addToWish")
-    public Wish addToWish(@RequestBody WishDTO wishDto) {
-        return wishService.addToWish(wishDto);
-    }
+	    @PostMapping("/addToWish")
+	    public ResponseEntity<Wish> addToWish(@RequestBody WishDTO wishDto) {
+	        Wish wish = wishService.addToWish(wishDto);
+	        return ResponseEntity.ok(wish);
+	    }
 }

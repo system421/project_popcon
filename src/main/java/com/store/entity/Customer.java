@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -75,5 +77,6 @@ public class Customer {
 	    private String customerRole;
 
 	    @OneToOne(mappedBy = "customer")
+	    @JsonManagedReference
 	    private CartEntity cart;
 	}
