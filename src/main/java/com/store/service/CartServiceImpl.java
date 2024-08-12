@@ -4,8 +4,10 @@ import com.store.dto.CartDTO;
 import com.store.dto.CartItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
+import com.store.entity.Customer;
 import com.store.mapper.CartMapper;
 import com.store.repository.CartRepository;
+import com.store.repository.CustomerRepository;
 import com.store.repository.CartItemRepository;
 import com.store.service.CartService;
 import org.springframework.stereotype.Service;
@@ -22,18 +24,22 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
-
-    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper) {
+    private final CustomerRepository customerRepository;
+    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper, CustomerRepository customerRepository) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.cartMapper = cartMapper;
+        this.customerRepository = customerRepository;
     }
-
     @Override
     @Transactional
     public CartDTO createCart(CartDTO cartDTO) {
+        // Customer를 찾아서 설정
+        Customer customer = customerRepository.findById(cartDTO.getCustomerIdx())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
         CartEntity cartEntity = new CartEntity();
-        cartEntity.setCustomerIdx(cartDTO.getCustomerIdx());
+        cartEntity.setCustomer(customer);
         cartEntity.setCreatedDate(LocalDateTime.now());
         cartEntity.setUpdatedDate(LocalDateTime.now());
         cartEntity = cartRepository.save(cartEntity);
@@ -49,7 +55,7 @@ public class CartServiceImpl implements CartService {
 
         cartItemRepository.saveAll(cartItems);
         
-        return CartDTO.of(cartEntity, cartItems);
+        return CartDTO.of(cartEntity, cartItems); // CartDTO.of() 메서드는 CartEntity와 CartItemEntities를 기반으로 DTO를 만들어야 합니다.
     }
 
 

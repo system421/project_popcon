@@ -26,7 +26,7 @@ public class CartDTO {
     public static CartDTO of(CartEntity cartEntity, List<CartItemEntity> itemEntities) {
         CartDTO cart = new CartDTO();
         cart.setCartIdx(cartEntity.getCartIdx());
-        cart.setCustomerIdx(cartEntity.getCustomerIdx());
+        cart.setCustomerIdx(cartEntity.getCustomer().getCustomerIdx());
         cart.setCartItems(new ArrayList<>());
         for (CartItemEntity itemEntity : itemEntities) {
             cart.getCartItems().add(CartItemDTO.of(itemEntity));

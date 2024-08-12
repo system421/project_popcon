@@ -22,8 +22,9 @@ public class CartEntity {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private int cartIdx;
 
-	    @Column(name = "customer_idx")
-	    private int customerIdx;
+	    @OneToOne
+	    @JoinColumn(name = "customer_idx")
+	    private Customer customer;
 
 	    private LocalDateTime createdDate;
 	    private LocalDateTime updatedDate;

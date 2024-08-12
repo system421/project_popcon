@@ -68,7 +68,7 @@ public class JwtAuthenticationController {
                     customer.getCustomerAddMore(),
                     customer.getCustomerEmail(),
                     customer.getCustomerRate(),
-                    customer.getCustomerRole()
+                    customer.getCustomerRole(), null
                 ), 
                 null, 
                 roles
