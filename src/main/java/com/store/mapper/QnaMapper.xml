@@ -10,6 +10,8 @@
   		<result property="customerIdx"   column="customer_idx"/>
   		<result property="qnaTitle"   column="qna_title"/>
   		<result property="qnaText"   column="qna_text"/>
+  		<result property="qnaPicture"   column="qna_picture"/>
+  		<result property="qnaImage"   column="qna_image"/>
   		<result property="qnaDate"   column="qna_date"/>
   	</resultMap>
   	<select id="findMyQna" resultMap="S2C">
@@ -18,6 +20,8 @@
  				   customer_idx,
  				   qna_title,
  				   qna_text,
+ 				   qna_picture,
+ 				   qna_image,
  				   qna_date
  			  from CUSTOMER_QNA
  			 
