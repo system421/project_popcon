@@ -75,4 +75,5 @@ public class SkuController {
 	        Wish wish = wishService.addToWish(wishDto);
 	        return ResponseEntity.ok(wish);
 	    }
+	    
 }

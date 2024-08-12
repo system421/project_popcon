@@ -76,7 +76,7 @@ public class JwtAuthenticationController {
         }
         
         String token = tokenService.generateToken(authenticationToken);
-        return ResponseEntity.ok(new JwtTokenResponse(token));
+        return ResponseEntity.ok(new JwtTokenResponse(token, customer.getCustomerIdx()));
     }
 
     // 암호화 객체 생성
