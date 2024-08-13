@@ -41,6 +41,7 @@ import org.springframework.http.ResponseEntity;
 public class WishController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	
 	private final WishService wishService;
     public WishController(WishService wishService) {
@@ -66,6 +67,7 @@ public class WishController {
     @DeleteMapping("/Wish/delete/{wishItemIdx}")
     public ResponseEntity<Void> deleteWishItem(@PathVariable int wishItemIdx) {
         wishService.deleteWishItem(wishItemIdx);
+
         return ResponseEntity.noContent().build();
     }
    
