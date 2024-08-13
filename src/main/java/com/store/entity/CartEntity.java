@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -24,6 +26,7 @@ public class CartEntity {
 
 	    @OneToOne
 	    @JoinColumn(name = "customer_idx")
+	    @JsonBackReference
 	    private Customer customer;
 
 	    private LocalDateTime createdDate;

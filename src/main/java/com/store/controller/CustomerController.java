@@ -30,7 +30,7 @@ public class CustomerController {
 	private final MemService memService;
 
 	
-	@GetMapping("/Customer/{customerIdx}")
+	@GetMapping("/getCustomerIdx/{customerIdx}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable int customerIdx) {
         CustomerDTO customerDTO = memService.findById(customerIdx);
         return ResponseEntity.ok(customerDTO);
