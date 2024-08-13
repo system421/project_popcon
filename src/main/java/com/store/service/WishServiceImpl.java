@@ -4,9 +4,12 @@ import com.store.dto.WishDTO;
 import com.store.dto.WishItemDTO;
 import com.store.entity.Wish;
 import com.store.entity.WishItemEntity;
+import com.store.entity.CartEntity;
+import com.store.entity.CartItemEntity;
 import com.store.entity.Customer;
 import com.store.mapper.WishMapper;
 import com.store.repository.WishRepository;
+import com.store.repository.CartItemRepository;
 import com.store.repository.CustomerRepository;
 import com.store.repository.WishItemRepository;
 import org.springframework.stereotype.Service;
@@ -24,12 +27,14 @@ public class WishServiceImpl implements WishService {
     private final WishItemRepository wishItemRepository;
     private final WishMapper wishMapper;
     private final CustomerRepository customerRepository;
-
-    public WishServiceImpl(WishRepository wishRepository, WishItemRepository wishItemRepository, WishMapper wishMapper, CustomerRepository customerRepository) {
+    private final CartItemRepository cartItemRepository;
+    
+    public WishServiceImpl(WishRepository wishRepository, WishItemRepository wishItemRepository, WishMapper wishMapper, CustomerRepository customerRepository, CartItemRepository cartItemRepository) {
         this.wishRepository = wishRepository;
         this.wishItemRepository = wishItemRepository;
         this.wishMapper = wishMapper;
         this.customerRepository = customerRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -107,6 +112,28 @@ public class WishServiceImpl implements WishService {
     public List<WishItemDTO> findAll() {
         return wishMapper.findAll();
     }
+    @Override
+    @Transactional
+    public void moveWishToCart(int wishItemIdx, int cartIdx) {
+        // 찜한 항목 가져오기
+        WishItemEntity wishItem = wishItemRepository.findById(wishItemIdx)
+                .orElseThrow(() -> new RuntimeException("Wish item not found"));
 
+     // CartEntity 객체 생성 및 cartIdx 설정
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setCartIdx(cartIdx);
+
+        // 장바구니 항목 생성 및 저장
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cart(cartEntity)
+                .skuIdx(wishItem.getSkuIdx())
+                .skuValue(1)  // 기본 수량을 1로 설정, 필요시 수정 가능
+                .build();
+        
+        cartItemRepository.save(cartItem);
+
+        // 찜 항목 삭제
+        wishItemRepository.deleteByWishWishIdx(wishItemIdx);
+    }
 	
 }

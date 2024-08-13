@@ -29,6 +29,7 @@ public class CartEntity {
 	    @JsonBackReference
 	    private Customer customer;
 
+	    @Column(name = "created_date")
 	    private LocalDateTime createdDate;
 	    private LocalDateTime updatedDate;
 }

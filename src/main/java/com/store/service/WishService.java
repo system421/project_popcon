@@ -19,7 +19,9 @@ public interface WishService {
 	WishDTO createWish(WishDTO wishDTO);
 	WishItemDTO updateWishItemQuantity(int wishItemIdx);
 	public void deleteWishItem(int wishItemIdx);
+	void moveWishToCart(int wishItemIdx, int cartIdx);
 	List<WishDTO> getWishesByCustomerIdx(int customerIdx);
 	WishItemEntity addToWish(WishItemDTO wishItemDTO);
 	List<WishItemDTO> findAll();
+	
 }

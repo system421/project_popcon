@@ -30,6 +30,8 @@ import com.store.dto.WishItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.Wish;
 import com.store.entity.WishItemEntity;
+import com.store.repository.CartItemRepository;
+import com.store.repository.WishItemRepository;
 import com.store.service.CartService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
@@ -42,10 +44,16 @@ public class WishController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private final WishService wishService;
-    public WishController(WishService wishService) {
-        this.wishService = wishService;
-    }
+	 private final WishService wishService;
+	    private final WishItemRepository wishItemRepository;
+	    private final CartItemRepository cartItemRepository;
+
+	    @Autowired
+	    public WishController(WishService wishService, WishItemRepository wishItemRepository, CartItemRepository cartItemRepository) {
+	        this.wishService = wishService;
+	        this.wishItemRepository = wishItemRepository;
+	        this.cartItemRepository = cartItemRepository;
+	    }
     @GetMapping("/Wish/items")
     public ResponseEntity<List<WishItemDTO>> findAll() {
         return ResponseEntity.ok(wishService.findAll());        
@@ -68,5 +76,14 @@ public class WishController {
         wishService.deleteWishItem(wishItemIdx);
         return ResponseEntity.noContent().build();
     }
-   
+    @PostMapping("/Wish/moveToCart")
+    public ResponseEntity<String> moveWishToCart(@RequestParam int wishItemIdx, @RequestParam int cartIdx) {
+        try {
+            wishService.moveWishToCart(wishItemIdx, cartIdx);
+            return ResponseEntity.ok("Product moved to cart successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error moving product to cart: " + e.getMessage());
+        }
+    }
+    
 }
