@@ -29,5 +29,8 @@ public class QnaDTO {
 	@NotEmpty(message="내용을 입력하세요.")
 	String qnaText;
 	String qnaDate;
+	String qnaPicture;
+	String qnaImage;
+	
 	
 }
