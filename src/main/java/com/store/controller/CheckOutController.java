@@ -47,14 +47,14 @@ public class CheckOutController {
 		//유저 정보 불러오기
 	    @GetMapping("/findCustomer")
 	    public List<CheckOutDTO> findCustomer(Integer userid) {
-	    	userid = 1; //유저의 값지정 (수정필요)
+	    	userid = 10; //유저의 값지정 (수정필요)
 	        return checkOutService.findCustomer(userid);
 	    }
 	    
 	    //장바구니 불러오기
 	    @GetMapping("/findCart")
 	    public List<CheckOutDTO> findCart(Integer userid) {
-	    	userid = 1; // 유저의 값지정 (수정필요)
+	    	userid = 10; // 유저의 값지정 (수정필요)
 	    	List<CheckOutDTO>xx=checkOutService.findCart(userid);
 	    	System.out.println(xx);
 	        return xx;

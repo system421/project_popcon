@@ -4,20 +4,36 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.store.mapper.WishMapper">
+<select id="findWishesByCustomerIdx" resultMap="WishResultMap">
+    SELECT * FROM wish WHERE customer_idx = #{customerIdx}
+</select>
 
+<resultMap id="WishResultMap" type="com.store.dto.WishDTO">
+    <id property="wishIdx" column="wish_idx"/>
+    <result property="customerIdx" column="customer_idx"/>
+    <collection property="wishItems" ofType="com.store.dto.WishDTO.WishItemDTO" column="wish_idx" select="findWishItemsByWishIdx"/>
+</resultMap>
 
   <select id="findAll" resultType="com.store.dto.WishDTO">
         SELECT 
-            w.wish_idx AS wishIdx,
+            w.wish__item_idx AS wishItemIdx,
             w.customer_idx AS customerIdx,
             w.sku_idx AS skuIdx,
             s.sku_name AS skuName,
-            s.sku_barcode AS skuBarcode,
             s.sku_cost AS skuCost
-        FROM WISH w
+        FROM wish_item w
         JOIN SKU s ON w.sku_idx = s.sku_idx
     </select>
-
+<select id="findWishesItemsByCartIdx" resultType="com.store.dto.WishItemDTO">
+         SELECT 
+            w.wish_item_idx AS wishItemIdx,
+            w.sku_idx AS skuIdx,
+            s.sku_name AS skuName,
+            s.sku_cost AS skuCost
+        FROM wish_item w
+        JOIN sku s ON ci.sku_idx = s.sku_idx
+        WHERE w.wish_idx = #{wishIdx}
+    </select>
   
  
 

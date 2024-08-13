@@ -12,10 +12,11 @@ import org.apache.ibatis.annotations.Select;
 import com.store.dto.CartDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
+import com.store.dto.WishItemDTO;
 
 @Mapper
 public interface WishMapper {
-	List<WishDTO> findAll();
-
+	List<WishItemDTO> findAll();
+	List<WishDTO>getWishesByCustomerIdx(int customerIdx);
 }
 
