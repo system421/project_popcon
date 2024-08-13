@@ -25,13 +25,16 @@
         JOIN SKU s ON w.sku_idx = s.sku_idx
     </select>
 <select id="getWishesByCustomerIdx" resultType="com.store.dto.WishItemDTO">
+
          SELECT 
             w.wish_item_idx AS wishItemIdx,
             w.sku_idx AS skuIdx,
             s.sku_name AS skuName,
             s.sku_cost AS skuCost
         FROM wish_item w
+
         JOIN sku s ON w.sku_idx = s.sku_idx
+
         WHERE w.wish_idx = #{wishIdx}
     </select>
   

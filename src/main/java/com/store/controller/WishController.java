@@ -30,8 +30,10 @@ import com.store.dto.WishItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.Wish;
 import com.store.entity.WishItemEntity;
+
 import com.store.repository.CartItemRepository;
 import com.store.repository.WishItemRepository;
+
 import com.store.service.CartService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
@@ -43,7 +45,8 @@ import org.springframework.http.ResponseEntity;
 public class WishController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
+
 	 private final WishService wishService;
 	    private final WishItemRepository wishItemRepository;
 	    private final CartItemRepository cartItemRepository;
@@ -58,6 +61,7 @@ public class WishController {
     public ResponseEntity<List<WishItemDTO>> findAll() {
         return ResponseEntity.ok(wishService.findAll());        
     }
+
     @GetMapping("/Wish/{customerIdx}")
     public ResponseEntity<List<WishDTO>>getWishesByCustomerIdx(@PathVariable int customerIdx){
     	return ResponseEntity.ok(wishService.getWishesByCustomerIdx(customerIdx));
@@ -74,6 +78,7 @@ public class WishController {
     @DeleteMapping("/Wish/delete/{wishItemIdx}")
     public ResponseEntity<Void> deleteWishItem(@PathVariable int wishItemIdx) {
         wishService.deleteWishItem(wishItemIdx);
+
         return ResponseEntity.noContent().build();
     }
     @PostMapping("/Wish/moveToCart")
@@ -85,5 +90,5 @@ public class WishController {
             return ResponseEntity.status(500).body("Error moving product to cart: " + e.getMessage());
         }
     }
-    
+
 }

@@ -4,12 +4,14 @@ import com.store.dto.WishDTO;
 import com.store.dto.WishItemDTO;
 import com.store.entity.Wish;
 import com.store.entity.WishItemEntity;
+
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.entity.Customer;
 import com.store.mapper.WishMapper;
 import com.store.repository.WishRepository;
 import com.store.repository.CartItemRepository;
+
 import com.store.repository.CustomerRepository;
 import com.store.repository.WishItemRepository;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class WishServiceImpl implements WishService {
     private final WishItemRepository wishItemRepository;
     private final WishMapper wishMapper;
     private final CustomerRepository customerRepository;
+
     private final CartItemRepository cartItemRepository;
     
     public WishServiceImpl(WishRepository wishRepository, WishItemRepository wishItemRepository, WishMapper wishMapper, CustomerRepository customerRepository, CartItemRepository cartItemRepository) {
@@ -58,6 +61,7 @@ public class WishServiceImpl implements WishService {
             wishItems.add(wishItemEntity);
         }
 
+
         wishItemRepository.saveAll(wishItems);
         
         return WishDTO.of(wishEntity, wishItems); // WishDTO.of() 메서드는 WishEntity와 WishItemEntities를 기반으로 DTO를 만들어야 합니다.
@@ -73,6 +77,7 @@ public class WishServiceImpl implements WishService {
         return WishItemDTO.of(wishItemEntity);
     }
 
+
     @Override
     @Transactional
     public void deleteWishItem(int wishItemIdx) {
@@ -80,6 +85,7 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+
     public List<WishDTO> getWishesByCustomerIdx(int customerIdx) {
         return wishMapper.getWishesByCustomerIdx(customerIdx);
     }
@@ -112,6 +118,7 @@ public class WishServiceImpl implements WishService {
     public List<WishItemDTO> findAll() {
         return wishMapper.findAll();
     }
+
     @Override
     @Transactional
     public void moveWishToCart(int wishItemIdx, int cartIdx) {
@@ -135,5 +142,6 @@ public class WishServiceImpl implements WishService {
         // 찜 항목 삭제
         wishItemRepository.deleteByWishWishIdx(wishItemIdx);
     }
+
 	
 }

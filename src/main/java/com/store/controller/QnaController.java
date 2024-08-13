@@ -9,10 +9,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.store.dto.QnaDTO;
+import com.store.entity.Customer;
 import com.store.entity.CustomerQna;
+import com.store.service.MemService;
 import com.store.service.QnaService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +25,17 @@ import lombok.extern.slf4j.Slf4j;
 public class QnaController {
 
 	QnaService qnaService;
-	public QnaController(QnaService qnaService) {
+	MemService memService;
+	
+	public QnaController(QnaService qnaService, MemService memService) {
 		this.qnaService = qnaService;
+		this.memService = memService;
 	}
 
-//	문의 신청하기 
+//	문의 신청하기	
 	@PostMapping("/ask")
 	public ResponseEntity<?> PostMyQna(@Valid @RequestBody CustomerQna qna,
+//									   @RequestParam String userid,
 												  BindingResult bindingResult) {
 		
 		// 유효성 검사 결과 확인
@@ -39,9 +46,16 @@ public class QnaController {
 				errorMessage.append(error.getDefaultMessage()).append(""));
 			return ResponseEntity.badRequest().body(errorMessage.toString());
 		};
-		//유효성 검사 통과시 DB 저장
+		
 		qna = qnaService.PostMyQna(qna);
 		log.info("postMyQna qnaDTO : {}", qna); 
+//		log.info("userid: "+userid);
+		
+//		Customer mem = memService.findByUserID(userid);
+//		log.info("mem: "+mem);
+//		qna.setCustomerIdx(mem.getCustomerIdx());
+		
+		//유효성 검사 통과시 DB 저장
 		return ResponseEntity.ok(qna);
 	}
 	
