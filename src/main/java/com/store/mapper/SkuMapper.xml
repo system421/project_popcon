@@ -7,12 +7,12 @@
 
 
   <select id="findAll"  resultType="Sku">
-       SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost, sku_barcode AS skuBarcode
+       SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost
         FROM SKU
     </select>
   
   <select id="findByType" parameterType="int" resultType="Sku">
-        SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost, sku_barcode AS skuBarcode
+        SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost
         FROM SKU
         WHERE skutype_idx = #{skutypeIdx}
     </select>

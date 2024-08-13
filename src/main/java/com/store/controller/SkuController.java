@@ -61,21 +61,24 @@ public class SkuController {
         return list;
         
     } 
-	@GetMapping("/Sku/type/{skutypeIdx}")
+	@GetMapping("/Sku/type/{skutypeIdx}") 
 	public List<SkuDTO> findByType(@PathVariable int skutypeIdx) {
 		List<SkuDTO> list = skuService.findByType(skutypeIdx);
 		return skuService.findByType(skutypeIdx);
 	    }
-	  @PostMapping("/Sku/addToCart")
-	    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
-	        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
-	        return ResponseEntity.ok(cartItemEntity);
-	    }
+	
+  @PostMapping("/Sku/addToCart")
+    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
+        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
+        return ResponseEntity.ok(cartItemEntity);
+    }
+
 
 	    @PostMapping("/addToWish")
 	    public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishitemDto) {
 	    	WishItemEntity wishItemEntity = wishService.addToWish(wishitemDto);
 	        return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
 	    }
+
 	    
 }
