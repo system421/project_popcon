@@ -1,57 +1,59 @@
 package com.store.controller;
 
-
 import java.util.List;
 
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.store.dto.KeepDTO;
-import com.store.dto.SkuDTO;
+import com.store.dto.KeepItemDTO;
+import com.store.entity.KeepItemEntity;
 import com.store.service.KeepService;
-import com.store.service.SkuService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
+@RequestMapping("/keep")
 public class KeepController {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	@Autowired
-	KeepService keepService;
-    public KeepController(SkuService skuService) {
+    private final KeepService keepService;
+
+   
+    public KeepController(KeepService keepService) {
         this.keepService = keepService;
     }
-	@GetMapping("/Keep")
-    public List<KeepDTO> listKeep() {
-        return keepService.findAll();
-        
-    } 
 
+    // 고객의 냉장고(Keep) 생성
+    @PostMapping("/create")
+    public ResponseEntity<KeepDTO> createKeep(@RequestBody KeepDTO keepDTO) {
+        KeepDTO createdKeep = keepService.createKeep(keepDTO);
+        return ResponseEntity.ok(createdKeep);
+    }
+
+    // 냉장고에 있는 항목의 수량 업데이트
+    @PutMapping("/update-item/{keepItemIdx}")
+    public ResponseEntity<KeepItemDTO> updateKeepItemQuantity(@PathVariable int keepItemIdx, @RequestParam int qty) {
+        KeepItemDTO updatedKeepItem = keepService.updateKeepItemQuantity(keepItemIdx, qty);
+        return ResponseEntity.ok(updatedKeepItem);
+    }
+
+    // 특정 고객의 냉장고 내용 조회
+    @GetMapping("/{customerIdx}")
+    public ResponseEntity<List<KeepDTO>> getKeepByCustomerIdx(@PathVariable int customerIdx) {
+        List<KeepDTO> keeps = keepService.getKeepByCustomerIdx(customerIdx);
+        return ResponseEntity.ok(keeps);
+    }
+
+    // 냉장고에서 항목 삭제
+    @DeleteMapping("/delete-item/{keepItemIdx}")
+    public ResponseEntity<Void> deleteKeepItem(@PathVariable int keepItemIdx) {
+        keepService.deleteFromFridge(keepItemIdx);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 냉장고에 항목 추가
+    @PostMapping("/add-item")
+    public ResponseEntity<KeepItemEntity> addToKeep(@RequestBody KeepItemDTO keepItemDTO) {
+        KeepItemEntity addedKeepItem = keepService.addToKeep(keepItemDTO);
+        return ResponseEntity.ok(addedKeepItem);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,93 +1,111 @@
 package com.store.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
-
-import com.store.dto.CartDTO;
 import com.store.dto.KeepDTO;
-import com.store.entity.CartEntity;
-import com.store.entity.Customer;
+import com.store.dto.KeepItemDTO;
 import com.store.entity.Keep;
-import com.store.entity.Sku;
+import com.store.entity.KeepItemEntity;
+import com.store.entity.Customer;
 import com.store.mapper.KeepMapper;
 import com.store.repository.CustomerRepository;
+import com.store.repository.KeepItemRepository;
 import com.store.repository.KeepRepository;
-import com.store.repository.SkuRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
-public class KeepServiceImpl implements KeepService{
+public class KeepServiceImpl implements KeepService {
 
-	@Autowired
-    private KeepMapper keepMapper;
-
-    @Autowired
-    private KeepRepository keepRepository;
-
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final KeepRepository keepRepository;
+    private final KeepItemRepository keepItemRepository;
+    private final KeepMapper keepMapper;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    private SkuRepository skuRepository;
+    public KeepServiceImpl(KeepRepository keepRepository, KeepItemRepository keepItemRepository, KeepMapper keepMapper, CustomerRepository customerRepository) {
+        this.keepRepository = keepRepository;
+        this.keepItemRepository = keepItemRepository;
+        this.keepMapper = keepMapper;
+        this.customerRepository = customerRepository;
+    }
+
 
     @Override
-    public Keep addToFridge(KeepDTO keepDto) {
-        Keep keep = convertToEntity(keepDto);
-        return keepRepository.save(keep);
+    @Transactional
+    public KeepDTO createKeep(KeepDTO keepDTO) {
+        Customer customer = customerRepository.findById(keepDTO.getCustomerIdx())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Keep keepEntity = new Keep();
+        keepEntity.setCustomer(customer);
+        keepEntity.setCreatedDate(LocalDateTime.now());
+        keepEntity.setKeepDate(LocalDateTime.now());
+        keepEntity = keepRepository.save(keepEntity);
+
+        List<KeepItemEntity> keepItems = new ArrayList<>();
+        for (KeepItemDTO keepItemDTO : keepDTO.getKeepItems()) {
+            KeepItemEntity keepItemEntity = new KeepItemEntity();
+            keepItemEntity.setKeep(keepEntity);
+            keepItemEntity.setSkuIdx(keepItemDTO.getSkuIdx());
+            keepItemEntity.setQty(keepItemDTO.getQty());
+            keepItems.add(keepItemEntity);
+        }
+
+        keepItemRepository.saveAll(keepItems);
+
+        return KeepDTO.of(keepEntity, keepItems);
     }
 
     @Override
-    public List<KeepDTO> findAll() {
-        return keepMapper.findAll();
+    @Transactional
+    public KeepItemDTO updateKeepItemQuantity(int keepItemIdx, int qty) {
+        KeepItemEntity keepItemEntity = keepItemRepository.findById(keepItemIdx)
+                .orElseThrow(() -> new RuntimeException("KeepItem not found"));
+
+        keepItemEntity.setQty(qty);
+        keepItemEntity = keepItemRepository.save(keepItemEntity);
+
+        return KeepItemDTO.of(keepItemEntity);
+    }
+
+    @Override
+    public List<KeepDTO> getKeepByCustomerIdx(int customerIdx) {
+        return keepMapper.findKeepByCustomerIdx(customerIdx);
     }
 
     @Override
     public void deleteFromFridge(int fridgeIdx) {
-        keepRepository.deleteById(fridgeIdx);
+        keepItemRepository.deleteByKeepFridgeIdx(fridgeIdx);
     }
 
-     public Keep updateFridge(KeepDTO keepDto) {
-        Keep existingKeep = keepRepository.findById(keepDto.getFridgeIdx())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Fridge ID:" + keepDto.getFridgeIdx()));
-  
-        Customer customer = customerRepository.findById(keepDto.getCustomerIdx())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid customer ID:" + keepDto.getCustomerIdx()));
-        Sku sku = skuRepository.findById(keepDto.getSkuIdx())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid SKU ID: " + keepDto.getSkuIdx()));
+    @Override
+    @Transactional
+    public KeepItemEntity addToKeep(KeepItemDTO keepItemDTO) {
+        Keep keepEntity = keepRepository.findById(keepItemDTO.getFridgeIdx())
+                .orElseThrow(() -> new RuntimeException("Keep not found"));
 
-        existingKeep.setCustomer(customer);
-        existingKeep.setSku(sku);
+        Optional<KeepItemEntity> existingKeepItem = keepItemRepository.findByKeepFridgeIdxAndSkuIdx(keepEntity.getFridgeIdx(), keepItemDTO.getSkuIdx());
 
-        return keepRepository.save(existingKeep);
+        if (existingKeepItem.isPresent()) {
+            KeepItemEntity keepItemEntity = existingKeepItem.get();
+            keepItemEntity.setQty(keepItemEntity.getQty() + 1);
+            return keepItemRepository.save(keepItemEntity);
+        } else {
+            KeepItemEntity keepItemEntity = new KeepItemEntity();
+            keepItemEntity.setKeep(keepEntity);
+            keepItemEntity.setSkuIdx(keepItemDTO.getSkuIdx());
+            keepItemEntity.setQty(1);
+            return keepItemRepository.save(keepItemEntity);
+        }
     }
 
-    private Keep convertToEntity(KeepDTO keepDto) {
-        Keep keep = new Keep();
-
-        Customer customer = customerRepository.findById(keepDto.getCustomerIdx())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid customer ID: " + keepDto.getCustomerIdx()));
-        Sku sku = skuRepository.findById(keepDto.getSkuIdx())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid SKU ID: " + keepDto.getSkuIdx()));
-
-        keep.setCustomer(customer);
-        keep.setSku(sku);
-
-        return keep;
+    @Override
+    public List<KeepItemDTO> findAll(){
+    	return keepMapper.findAll();
     }
 }
-
-	
-
-	
-
