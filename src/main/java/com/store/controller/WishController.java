@@ -2,6 +2,7 @@ package com.store.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -25,8 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.dto.CartDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
+import com.store.dto.WishItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.Wish;
+import com.store.entity.WishItemEntity;
 import com.store.service.CartService;
 import com.store.service.SkuService;
 import com.store.service.WishService;
@@ -39,26 +42,31 @@ public class WishController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	WishService wishService;
+	private final WishService wishService;
     public WishController(WishService wishService) {
         this.wishService = wishService;
     }
-    @GetMapping("/Wish")
-    public ResponseEntity<List<WishDTO>> findAll() {
-        List<WishDTO> allWishes = wishService.findAll();
-        return ResponseEntity.ok(allWishes);
-        
+    @GetMapping("/Wish/items")
+    public ResponseEntity<List<WishItemDTO>> findAll() {
+        return ResponseEntity.ok(wishService.findAll());        
+    }
+    @GetMapping("/Wish/{customerIdx}")
+    public ResponseEntity<List<WishDTO>>getWishesByCustomerIdx(@PathVariable int customerIdx){
+    	return ResponseEntity.ok(wishService.getWishesByCustomerIdx(customerIdx));
     }
 	@PostMapping("/Wish/add")
-    public ResponseEntity<Wish> addToWish(@RequestBody WishDTO wishDto) {
-        Wish newWishItem = wishService.addToWish(wishDto);
-        return ResponseEntity.ok(newWishItem);
+    public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishItemDto) {
+        WishItemEntity wishItemEntity = wishService.addToWish(wishItemDto);
+        return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
     }
-
-  
-    @DeleteMapping("/Wish/delete/{wishIdx}")
-    public ResponseEntity<Void> deleteFromWish(@PathVariable int wishIdx) {
-        wishService.deleteFromWish(wishIdx);
+	@PostMapping("/create")
+	public ResponseEntity<WishDTO> createWish(@RequestBody WishDTO wishDTO){
+		return ResponseEntity.ok(wishService.createWish(wishDTO));
+	}
+    @DeleteMapping("/Wish/delete/{wishItemIdx}")
+    public ResponseEntity<Void> deleteWishItem(@PathVariable int wishItemIdx) {
+        wishService.deleteWishItem(wishItemIdx);
         return ResponseEntity.noContent().build();
     }
+   
 }

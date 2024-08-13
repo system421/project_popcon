@@ -13,9 +13,11 @@ import com.store.dto.CartDTO;
 import com.store.dto.CustomerDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.Customer;
+import com.store.entity.Wish;
 import com.store.mapper.CustomerMapper;
 import com.store.repository.CartRepository;
 import com.store.repository.CustomerRepository;
+import com.store.repository.WishRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -26,7 +28,9 @@ public class MemServiceImpl implements MemService {
 
 	 private final CustomerRepository customerRepository;
 	    private final CartRepository cartRepository;
-
+	    private final WishService wishService;
+	    private final WishRepository wishRepository;
+	    
 	    @Override
 	    public CustomerDTO findById(int customerIdx) {
 	        Customer customer = customerRepository.findByCustomerIdx(customerIdx);
@@ -43,8 +47,12 @@ public class MemServiceImpl implements MemService {
 	        CartEntity cart = CartEntity.builder()
 	                .customer(savedCustomer)
 	                .build();
-
 	        cartRepository.save(cart);
+	        
+	        Wish wish = Wish.builder()
+	        		.customer(savedCustomer)
+	        		.build();
+	        wishRepository.save(wish);
 
 	        return savedCustomer;
 	    }
@@ -76,9 +84,12 @@ public class MemServiceImpl implements MemService {
 	        CartEntity cart = CartEntity.builder()
 	                .customer(savedCustomer)
 	                .build();
-
 	        cartRepository.save(cart);
-
+	        Wish wish = Wish.builder()
+	        		.customer(savedCustomer)
+	        		.build();
+	        wishRepository.save(wish);
+	        
 	        return CustomerDTO.builder()
 	                .customerIdx(savedCustomer.getCustomerIdx())
 	                .customerId(savedCustomer.getCustomerId())

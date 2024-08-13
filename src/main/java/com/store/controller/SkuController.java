@@ -24,9 +24,11 @@ import com.store.dto.CartDTO;
 import com.store.dto.CartItemDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
+import com.store.dto.WishItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.entity.Wish;
+import com.store.entity.WishItemEntity;
 import com.store.repository.SkuRepository;
 import com.store.service.CartService;
 import com.store.service.SkuService;
@@ -71,9 +73,9 @@ public class SkuController {
 	    }
 
 	    @PostMapping("/addToWish")
-	    public ResponseEntity<Wish> addToWish(@RequestBody WishDTO wishDto) {
-	        Wish wish = wishService.addToWish(wishDto);
-	        return ResponseEntity.ok(wish);
+	    public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishitemDto) {
+	    	WishItemEntity wishItemEntity = wishService.addToWish(wishitemDto);
+	        return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
 	    }
 	    
 }
