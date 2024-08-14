@@ -10,11 +10,12 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.store.dto.KeepDTO;
+import com.store.dto.KeepItemDTO;
 import com.store.dto.SkuDTO;
 
 @Mapper
 public interface KeepMapper {
-
-    List<KeepDTO> findAll();
+	List<KeepDTO> findKeepByCustomerIdx(@Param("customerIdx") int customerIdx);
+	 List<KeepItemDTO> findAll();
 }
 

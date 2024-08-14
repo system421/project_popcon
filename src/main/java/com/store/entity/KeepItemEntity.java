@@ -2,7 +2,6 @@ package com.store.entity;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,10 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,17 +31,20 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-public class Keep {
+public class KeepItemEntity {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    @Column(name = "fridge_idx")
-	    private int fridgeIdx;
+	    @Column(name = "keep_item_idx")
+	    private int keepItemIdx;
 	    
-	    @OneToOne
-	    @JoinColumn(name = "customer_idx", nullable = false)
-	    private Customer customer;
+	    @ManyToOne
+	    @JoinColumn(name = "fridge_idx", nullable = false)
+	    @JsonBackReference
+	    private Keep keep;
 	    
-	    @Column(name = "createdDate")
-	    private LocalDateTime createdDate;
-	    private LocalDateTime keepDate;
+	    @Column(name = "sku_idx", nullable = false)
+	    private int skuIdx;
+	    
+	    @Column(name = "qty", nullable = false)
+	    private int qty;
 	}

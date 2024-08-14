@@ -4,9 +4,14 @@ import com.store.dto.WishDTO;
 import com.store.dto.WishItemDTO;
 import com.store.entity.Wish;
 import com.store.entity.WishItemEntity;
+
+import com.store.entity.CartEntity;
+import com.store.entity.CartItemEntity;
 import com.store.entity.Customer;
 import com.store.mapper.WishMapper;
 import com.store.repository.WishRepository;
+import com.store.repository.CartItemRepository;
+
 import com.store.repository.CustomerRepository;
 import com.store.repository.WishItemRepository;
 import org.springframework.stereotype.Service;
@@ -25,11 +30,14 @@ public class WishServiceImpl implements WishService {
     private final WishMapper wishMapper;
     private final CustomerRepository customerRepository;
 
-    public WishServiceImpl(WishRepository wishRepository, WishItemRepository wishItemRepository, WishMapper wishMapper, CustomerRepository customerRepository) {
+    private final CartItemRepository cartItemRepository;
+    
+    public WishServiceImpl(WishRepository wishRepository, WishItemRepository wishItemRepository, WishMapper wishMapper, CustomerRepository customerRepository, CartItemRepository cartItemRepository) {
         this.wishRepository = wishRepository;
         this.wishItemRepository = wishItemRepository;
         this.wishMapper = wishMapper;
         this.customerRepository = customerRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Override
@@ -53,6 +61,7 @@ public class WishServiceImpl implements WishService {
             wishItems.add(wishItemEntity);
         }
 
+
         wishItemRepository.saveAll(wishItems);
         
         return WishDTO.of(wishEntity, wishItems); // WishDTO.of() 메서드는 WishEntity와 WishItemEntities를 기반으로 DTO를 만들어야 합니다.
@@ -68,6 +77,7 @@ public class WishServiceImpl implements WishService {
         return WishItemDTO.of(wishItemEntity);
     }
 
+
     @Override
     @Transactional
     public void deleteWishItem(int wishItemIdx) {
@@ -75,6 +85,7 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+
     public List<WishDTO> getWishesByCustomerIdx(int customerIdx) {
         return wishMapper.getWishesByCustomerIdx(customerIdx);
     }
@@ -106,6 +117,30 @@ public class WishServiceImpl implements WishService {
     @Override
     public List<WishItemDTO> findAll() {
         return wishMapper.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void moveWishToCart(int wishItemIdx, int cartIdx) {
+        // 찜한 항목 가져오기
+        WishItemEntity wishItem = wishItemRepository.findById(wishItemIdx)
+                .orElseThrow(() -> new RuntimeException("Wish item not found"));
+
+     // CartEntity 객체 생성 및 cartIdx 설정
+        CartEntity cartEntity = new CartEntity();
+        cartEntity.setCartIdx(cartIdx);
+
+        // 장바구니 항목 생성 및 저장
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cart(cartEntity)
+                .skuIdx(wishItem.getSkuIdx())
+                .skuValue(1)  // 기본 수량을 1로 설정, 필요시 수정 가능
+                .build();
+        
+        cartItemRepository.save(cartItem);
+
+        // 찜 항목 삭제
+        wishItemRepository.deleteByWishWishIdx(wishItemIdx);
     }
 
 	
