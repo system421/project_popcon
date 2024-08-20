@@ -20,16 +20,30 @@ public class QnaServiceImpl implements QnaService {
 		this.qnaMapper = qnaMapper;
 	}
 	
-	// 문의내역 등록
+	// 문의 등록 Post
 	@Override
 	public CustomerQna PostMyQna(CustomerQna qna) {
 		return qnaRepository.save(qna);
 	}
 
+    // 문의내용 Update
+	@Override
+    public CustomerQna EditMyQna(int CustomerIdx, CustomerQna qna) {
+        qna.setCustomerIdx(CustomerIdx);
+        return qnaRepository.save(qna);
+    }
+    
+    // 문의내용 Delete
+	@Override
+    public CustomerQna DeleteMyQna(int CustomerIdx, CustomerQna qna) {
+        qna.setQnaDel(true);
+        return qnaRepository.save(qna);
+    }
+	
 	// 문의내역 조회
 	@Override
-	public List<QnaDTO> findMyQna() {
-		return qnaMapper.findMyQna();
+	public List<QnaDTO> findMyQna(int CustomerIdx) {
+		return qnaMapper.findMyQna(CustomerIdx);
 	}
 
 }

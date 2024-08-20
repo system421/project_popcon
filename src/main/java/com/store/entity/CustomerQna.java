@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -42,7 +40,7 @@ public class CustomerQna {
 	
 	@Column(nullable=false, name="qna_title")
 	String qnaTitle;
-	
+																																																																																																																																																																																																																																																																																																																																																																																																																																										
 	@Column(nullable=false, name="qna_text")
 	String qnaText;
 	
@@ -52,6 +50,8 @@ public class CustomerQna {
 	@Column(name="qna_image")
 	String qnaImage;
 	
+	@Column(name="qna_del")
+	Boolean qnaDel;
 
 //	타임스탬프는 SQL로 저장
 	@Column(name="qna_picture")
@@ -65,11 +65,19 @@ public class CustomerQna {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
 	LocalDateTime qnaDate;
 	
-	@PrePersist // 엔티티가 저장되기 전에 호출
-	private void updateTime() {
-        this.qnaDate = LocalDateTime.now(); // qnaDate에도 현재 시간 설정
-        System.out.println("qnaDate:" + qnaDate);
-    }
+	@Column(name="qna_ans")
+	String qnaAns;
+	
+////	타임스탬프는 SQL로 저장
+//	@Column(name="qna_date")
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
+//	LocalDateTime qnaDate;
+//	
+//	@PrePersist // 엔티티가 저장되기 전에 호출
+//	private void updateTime() {
+//        this.qnaDate = LocalDateTime.now(); // qnaDate에도 현재 시간 설정
+//        System.out.println("qnaDate:" + qnaDate);
+//    }
 	
 	
 }

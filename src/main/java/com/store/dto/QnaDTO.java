@@ -30,7 +30,10 @@ public class QnaDTO {
 	String qnaText;
 	String qnaDate;
 	String qnaPicture;
-	String qnaImage;
+	String qnaImage;	
+	String qnaState;
+	String qnaClearDate;
+	String qnaDel;
 	
 	
 }
