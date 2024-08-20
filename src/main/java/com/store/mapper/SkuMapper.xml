@@ -2,23 +2,25 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+
+
 <mapper namespace="com.store.mapper.SkuMapper">
 
+	<select id="findAll" resultType="Sku">
+		SELECT sku_idx AS skuIdx,
+		skutype_idx AS skuTypeIdx, sku_name AS skuName,
+		sku_cost AS skuCost,
+		sku_barcode AS skuBarcode
+		FROM SKU
+	</select>
 
-  <select id="findAll"  resultType="Sku">
-       SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost, sku_barcode AS skuBarcode
-        FROM SKU
-    </select>
-  
-  <select id="findByType" parameterType="int" resultType="Sku">
-        SELECT sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName, sku_cost AS skuCost, sku_barcode AS skuBarcode
-        FROM SKU
-        WHERE skutype_idx = #{skutypeIdx}
-    </select>
+	<select id="findByType" parameterType="int" resultType="Sku">
+		SELECT
+		sku_idx AS skuIdx, skutype_idx AS skuTypeIdx, sku_name AS skuName,
+		sku_cost AS skuCost, sku_barcode AS skuBarcode
+		FROM SKU
+		WHERE
+		skutype_idx = #{skutypeIdx}
+	</select>
 
-
-   
 </mapper>
-
-

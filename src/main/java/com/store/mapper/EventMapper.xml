@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.store.mapper.EventMapper">
+	<resultMap id="event" type="EventDTO">
+		<result property="eventsName" column="events_name" />
+		<result property="eventsInfo" column="events_info" />
+		<result property="eventsStart" column="events_start" />
+		<result property="eventsEnd" column="events_end" />
+		<result property="eventsImg" column="events_img" />
+	</resultMap>
+	<select id="findAllEvent" resultMap="event">
+		SELECT events_name,
+			   events_info,
+			   events_start,
+			   events_end,
+			   events_img
+		FROM events
+	</select>
+
+</mapper>

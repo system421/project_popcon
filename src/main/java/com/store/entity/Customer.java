@@ -33,43 +33,30 @@ public class Customer {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    @Column(name = "customer_idx")
 	    private int customerIdx;
-
 	    @Column(name = "customer_id")
 	    private String customerId;
-
 	    @Column(name = "customer_pw")
 	    private String customerPw;
-
 	    @Column(name = "customer_name")
 	    private String customerName;
-
 	    @Column(name = "customer_phone")
 	    private String customerPhone;
-
 	    @Column(name = "customer_date")
 	    private Date customerDate;
-
 	    @Column(name = "customer_gender")
 	    private int customerGender;
-
 	    @Column(name = "customer_time")
 	    private Timestamp customerTime;
-
 	    @Column(name = "customer_add")
 	    private String customerAdd;
-
 	    @Column(name = "customer_add_more")
 	    private String customerAddMore;
-
 	    @Column(name = "customer_email")
 	    private String customerEmail;
-
 	    @Column(name = "customer_rate")
 	    private String customerRate;
-
 	    @Column(name = "customer_role")
 	    private String customerRole;
-
 	    @OneToOne(mappedBy = "customer")
 	    @JsonManagedReference
 	    private CartEntity cart;

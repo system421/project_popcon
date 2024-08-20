@@ -2,7 +2,6 @@ package com.store.entity;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,18 +31,21 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(name = "wish")
-public class Wish {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "wish_idx")
-    private int wishIdx;
-
-    @OneToOne
-    @JoinColumn(name = "customer_idx", referencedColumnName = "customer_idx", nullable = false)
-    @JsonBackReference
-    private Customer customer;
-
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
-}
+@Table(name = "keep_item")
+public class KeepItemEntity {
+	    @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    @Column(name = "keep_item_idx")
+	    private int keepItemIdx;
+	    
+	    @ManyToOne
+	    @JoinColumn(name = "fridge_idx", nullable = false)
+	    @JsonBackReference
+	    private Keep keep;
+	    
+	    @Column(name = "sku_idx", nullable = false)
+	    private int skuIdx;
+	    
+	    @Column(name = "qty", nullable = false)
+	    private int qty;
+	}

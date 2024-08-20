@@ -10,9 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItemEntity, Integer> {
-	 List<CartItemEntity> findByCartCartIdx(int cartIdx);
-
+	List<CartItemEntity> findByCartCartIdx(int cartIdx);
 	void deleteByCartCartIdx(int cartItemIdx);
-
-	 Optional<CartItemEntity> findByCartCartIdxAndSkuIdx(int cartIdx, int skuIdx);
+	// Cart의 Customer 필드를 통한 customerIdx로 삭제
+    void deleteByCartCustomerCustomerIdx(int customerIdx);
+    void deleteByCartCustomerCustomerIdxAndSkuIdxAndSkuValue(int customerIdx, int skuIdx, int skuValue);
+  
+	Optional<CartItemEntity> findByCartCartIdxAndSkuIdx(int cartIdx, int skuIdx);
+	List<CartItemEntity> findByCartCustomerCustomerIdx(int customerIdx);
 }

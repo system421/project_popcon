@@ -24,9 +24,11 @@ import com.store.dto.CartDTO;
 import com.store.dto.CartItemDTO;
 import com.store.dto.SkuDTO;
 import com.store.dto.WishDTO;
+import com.store.dto.WishItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.entity.Wish;
+import com.store.entity.WishItemEntity;
 import com.store.repository.SkuRepository;
 import com.store.service.CartService;
 import com.store.service.SkuService;
@@ -59,21 +61,24 @@ public class SkuController {
         return list;
         
     } 
-	@GetMapping("/Sku/type/{skutypeIdx}")
+	@GetMapping("/Sku/type/{skutypeIdx}") 
 	public List<SkuDTO> findByType(@PathVariable int skutypeIdx) {
 		List<SkuDTO> list = skuService.findByType(skutypeIdx);
 		return skuService.findByType(skutypeIdx);
 	    }
-	  @PostMapping("/Sku/addToCart")
-	    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
-	        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
-	        return ResponseEntity.ok(cartItemEntity);
-	    }
+	
+  @PostMapping("/Sku/addToCart")
+    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
+        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
+        return ResponseEntity.ok(cartItemEntity);
+    }
+
 
 	    @PostMapping("/addToWish")
-	    public ResponseEntity<Wish> addToWish(@RequestBody WishDTO wishDto) {
-	        Wish wish = wishService.addToWish(wishDto);
-	        return ResponseEntity.ok(wish);
+	    public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishitemDto) {
+	    	WishItemEntity wishItemEntity = wishService.addToWish(wishitemDto);
+	        return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
 	    }
+
 	    
 }
