@@ -35,6 +35,11 @@ jobs:
 
     - name: Deploy to Elastic Beanstalk
       run: |
+        export AWS_REGION=ap-northeast-2
+        export S3_BUCKET_NAME=elasticbeanstalk-ap-northeast-2-767397751289
+        export APP_NAME=POPCONBOOTAPP
+        export ENV_NAME=POPCONBOOTAPP-env-1
+        export VERSION_LABEL=$GITHUB_SHA
         aws elasticbeanstalk create-application-version --application-name $APP_NAME --version-label $VERSION_LABEL --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=$APP_NAME-$VERSION_LABEL.jar --region ap-northeast-2
         aws elasticbeanstalk update-environment --environment-name $ENV_NAME --version-label $VERSION_LABEL 
 
