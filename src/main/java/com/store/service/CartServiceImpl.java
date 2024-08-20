@@ -2,12 +2,17 @@ package com.store.service;
 
 import com.store.dto.CartDTO;
 import com.store.dto.CartItemDTO;
+import com.store.dto.KeepItemDTO;
 import com.store.entity.CartEntity;
 import com.store.entity.CartItemEntity;
 import com.store.entity.Customer;
+import com.store.entity.Keep;
+import com.store.entity.KeepItemEntity;
 import com.store.mapper.CartMapper;
 import com.store.repository.CartRepository;
 import com.store.repository.CustomerRepository;
+import com.store.repository.KeepItemRepository;
+import com.store.repository.KeepRepository;
 import com.store.repository.CartItemRepository;
 import com.store.service.CartService;
 import org.springframework.stereotype.Service;
@@ -25,11 +30,15 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
     private final CustomerRepository customerRepository;
-    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper, CustomerRepository customerRepository) {
+    private final KeepService keepservice;
+    private final KeepItemRepository keepItemRepository;
+    public CartServiceImpl(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper, CustomerRepository customerRepository,  KeepService keepService, KeepItemRepository keepItemRepository) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.cartMapper = cartMapper;
         this.customerRepository = customerRepository;
+        this.keepservice = keepService;
+        this.keepItemRepository = keepItemRepository;
     }
     @Override
     @Transactional
@@ -114,6 +123,48 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartItemDTO> findAll() {
         return cartMapper.findAll();
+    }
+    @Override
+    @Transactional
+    public void moveToKeep(int cartItemIdx, int fridgeIdx) {
+        // cartItemIdx로 카트 아이템을 조회
+        CartItemEntity cartItem = cartItemRepository.findById(cartItemIdx)
+            .orElseThrow(() -> new RuntimeException("Cart item not found"));
 
+        // KeepEntity 객체 생성 및 fridgeIdx 설정
+        Keep keepEntity = new Keep();
+        keepEntity.setFridgeIdx(fridgeIdx);
+
+        // 킵 항목 생성 및 저장
+        KeepItemEntity keepItem = KeepItemEntity.builder()
+                .keep(keepEntity)
+                .skuIdx(cartItem.getSkuIdx())
+                .qty(cartItem.getSkuValue())
+                .build();
+        
+        keepItemRepository.save(keepItem);
+
+        // 카트 아이템 삭제
+        cartItemRepository.delete(cartItem);
+    }
+
+
+    @Override
+    @Transactional
+    public void clearCartByCustomerIdx(int customerIdx) {
+        cartItemRepository.deleteByCartCustomerCustomerIdx(customerIdx);
+    }
+    @Override
+    public List<CartItemEntity> findCartItemsByCustomerIdx(int customerIdx) {
+        return cartItemRepository.findByCartCustomerCustomerIdx(customerIdx);
+    }
+    @Override
+    public void deleteCartItemsByCustomerIdx(int customerIdx, List<Integer> excludeSkuIds) {
+        List<CartItemEntity> cartItems = cartItemRepository.findByCartCustomerCustomerIdx(customerIdx);
+        for (CartItemEntity cartItem : cartItems) {
+            if (!excludeSkuIds.contains(cartItem.getSkuIdx())) {
+                cartItemRepository.delete(cartItem);
+            }
+        }
     }
 }

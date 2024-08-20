@@ -42,7 +42,7 @@ public class KeepController {
         List<KeepDTO> keeps = keepService.getKeepByCustomerIdx(customerIdx);
         return ResponseEntity.ok(keeps);
     }
-
+    
     // 냉장고에서 항목 삭제
     @DeleteMapping("/delete-item/{keepItemIdx}")
     public ResponseEntity<Void> deleteKeepItem(@PathVariable int keepItemIdx) {
@@ -51,9 +51,10 @@ public class KeepController {
     }
 
     // 냉장고에 항목 추가
-    @PostMapping("/add-item")
-    public ResponseEntity<KeepItemEntity> addToKeep(@RequestBody KeepItemDTO keepItemDTO) {
-        KeepItemEntity addedKeepItem = keepService.addToKeep(keepItemDTO);
-        return ResponseEntity.ok(addedKeepItem);
+    @PostMapping("/add-items")
+    public ResponseEntity<Void> addItemsToKeep(@RequestParam int customerIdx, @RequestBody List<KeepItemDTO> keepItems) {
+        keepService.moveItemsToKeep(customerIdx, keepItems);
+        return ResponseEntity.ok().build();
     }
+
 }

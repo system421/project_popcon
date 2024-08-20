@@ -48,4 +48,26 @@ public class CartController {
     public ResponseEntity<List<CartItemDTO>> findAll() {
         return ResponseEntity.ok(cartService.findAll());
     }
+    @PostMapping("/cart/moveToKeep")
+    public ResponseEntity<String> moveToKeep(@RequestParam int cartItemIdx, @RequestParam int fridgeIdx) {
+        try {
+            cartService.moveToKeep(cartItemIdx, fridgeIdx);
+            return ResponseEntity.ok("Product moved to keep successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error moving product to keep: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/cart/clear/{customerIdx}")
+    public ResponseEntity<Void> clearCartByCustomerIdx(@PathVariable int customerIdx) {
+        cartService.clearCartByCustomerIdx(customerIdx);
+        return ResponseEntity.noContent().build();
+    }
+   
+
+    @DeleteMapping("/clear/{customerIdx}")
+    public ResponseEntity<Void> clearCart(@PathVariable int customerIdx) {
+        cartService.deleteCartItemsByCustomerIdx(customerIdx, List.of());
+        return ResponseEntity.ok().build();
+    }
 }

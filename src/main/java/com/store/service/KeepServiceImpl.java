@@ -84,23 +84,18 @@ public class KeepServiceImpl implements KeepService {
     }
 
     @Override
-    @Transactional
     public KeepItemEntity addToKeep(KeepItemDTO keepItemDTO) {
-        Keep keepEntity = keepRepository.findById(keepItemDTO.getFridgeIdx())
-                .orElseThrow(() -> new RuntimeException("Keep not found"));
+        KeepItemEntity keepItemEntity = new KeepItemEntity();
+        keepItemEntity.setSkuIdx(keepItemDTO.getSkuIdx());
+        keepItemEntity.setQty(keepItemDTO.getQty());
+        // fridgeIdx나 customerIdx에 해당하는 Keep 설정 추가 필요
+        return keepItemRepository.save(keepItemEntity);
+    }
 
-        Optional<KeepItemEntity> existingKeepItem = keepItemRepository.findByKeepFridgeIdxAndSkuIdx(keepEntity.getFridgeIdx(), keepItemDTO.getSkuIdx());
-
-        if (existingKeepItem.isPresent()) {
-            KeepItemEntity keepItemEntity = existingKeepItem.get();
-            keepItemEntity.setQty(keepItemEntity.getQty() + 1);
-            return keepItemRepository.save(keepItemEntity);
-        } else {
-            KeepItemEntity keepItemEntity = new KeepItemEntity();
-            keepItemEntity.setKeep(keepEntity);
-            keepItemEntity.setSkuIdx(keepItemDTO.getSkuIdx());
-            keepItemEntity.setQty(1);
-            return keepItemRepository.save(keepItemEntity);
+    @Override
+    public void moveItemsToKeep(int customerIdx, List<KeepItemDTO> keepItems) {
+        for (KeepItemDTO keepItem : keepItems) {
+            addToKeep(keepItem);
         }
     }
 
@@ -108,4 +103,5 @@ public class KeepServiceImpl implements KeepService {
     public List<KeepItemDTO> findAll(){
     	return keepMapper.findAll();
     }
+    
 }

@@ -31,6 +31,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
+@Table(name = "keep_item")
 public class KeepItemEntity {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)

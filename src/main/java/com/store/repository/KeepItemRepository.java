@@ -12,5 +12,6 @@ import com.store.entity.KeepItemEntity;
 public interface KeepItemRepository extends JpaRepository<KeepItemEntity, Integer>  {
 	List<KeepItemEntity> findByKeepFridgeIdx(int fridgeIdx);
     void deleteByKeepFridgeIdx(int fridgeIdx);
+    
     Optional<KeepItemEntity> findByKeepFridgeIdxAndSkuIdx(int fridgeIdx, int skuIdx);
 }

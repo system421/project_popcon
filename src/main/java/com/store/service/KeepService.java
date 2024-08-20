@@ -20,4 +20,6 @@ public interface KeepService {
     void deleteFromFridge(int fridgeIdx);
     KeepItemEntity addToKeep(KeepItemDTO keepItemDTO);
     List<KeepItemDTO> findAll();
+    
+    void moveItemsToKeep(int customerIdx, List<KeepItemDTO> keepItems);
 }

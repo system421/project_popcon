@@ -9,5 +9,5 @@ import com.store.entity.Keep;
 
 public interface KeepRepository extends JpaRepository<Keep, Integer>  {
 
-	
+	Keep findByCustomerCustomerIdx(int customerIdx);
 }

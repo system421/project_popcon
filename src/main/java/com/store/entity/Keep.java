@@ -31,6 +31,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
+@Table(name = "keep")
 public class Keep {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +42,7 @@ public class Keep {
 	    @JoinColumn(name = "customer_idx", nullable = false)
 	    private Customer customer;
 	    
-	    @Column(name = "createdDate")
+	    @Column(name = "created_date")
 	    private LocalDateTime createdDate;
 	    private LocalDateTime keepDate;
 	}
