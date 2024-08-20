@@ -20,25 +20,24 @@ import com.store.dto.SkuDTO;
 import com.store.mapper.SkuMapper;
 
 @Service
-public class SkuServiceImpl implements SkuService{
+public class SkuServiceImpl implements SkuService {
 
 	SkuMapper skuMapper;
 
-	  @Autowired
-	  public SkuServiceImpl(SkuMapper skuMapper) {
-	        this.skuMapper = skuMapper;
-	    }
-	  
-	  @Override
-	  public List<SkuDTO> findAll() {
-	        return skuMapper.findAll();
-	    }
-	@Override
-	public List<SkuDTO> findByType(int skutypeIdx) {
-		return skuMapper.findByType(skutypeIdx);
+	@Autowired
+	public SkuServiceImpl(SkuMapper skuMapper) {
+		this.skuMapper = skuMapper;
 	}
+
+	@Override
+	public List<SkuDTO> findAll(int limit) {
+		return skuMapper.findAll(limit);
+	}
+
+	@Override
+	public List<SkuDTO> findByType(int skutypeIdx, int limit) {
+		// TODO Auto-generated method stub
+		return skuMapper.findByType(skutypeIdx, limit);
+	}
+
 }
-	
-
-	
-

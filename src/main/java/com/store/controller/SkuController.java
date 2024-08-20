@@ -1,6 +1,5 @@
 package com.store.controller;
 
-
 import java.util.List;
 
 import javax.validation.Valid;
@@ -41,44 +40,43 @@ import org.springframework.http.ResponseEntity;
 public class SkuController {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	SkuService skuService;
 	@Autowired
-    CartService cartService;
+	CartService cartService;
 	@Autowired
-    WishService wishService;
+	WishService wishService;
 	@Autowired
 	private SkuRepository skuRepository;
-	 
-    public SkuController(SkuService skuService) {
-        this.skuService = skuService;
-    }
-	@GetMapping("/Sku")
-    public List<SkuDTO> listSku() {
-		List<SkuDTO> list = skuService.findAll();
-		System.out.println(skuService.findAll());
-        return list;
-        
-    } 
-	@GetMapping("/Sku/type/{skutypeIdx}") 
-	public List<SkuDTO> findByType(@PathVariable int skutypeIdx) {
-		List<SkuDTO> list = skuService.findByType(skutypeIdx);
-		return skuService.findByType(skutypeIdx);
-	    }
-	
-  @PostMapping("/Sku/addToCart")
-    public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
-        CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
-        return ResponseEntity.ok(cartItemEntity);
-    }
 
+	public SkuController(SkuService skuService) {
+		this.skuService = skuService;
+	}
 
-	    @PostMapping("/addToWish")
-	    public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishitemDto) {
-	    	WishItemEntity wishItemEntity = wishService.addToWish(wishitemDto);
-	        return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
-	    }
+	@GetMapping("/Sku/{limit}")
+	public List<SkuDTO> listSku(@PathVariable int limit) {
+		List<SkuDTO> list = skuService.findAll(limit);
+		System.out.println(skuService.findAll(limit));
+		return list;
+	}
 
-	    
+	@GetMapping("/Sku/type/{skutypeIdx}/{limit}")
+	public List<SkuDTO> findByType(@PathVariable int skutypeIdx, @PathVariable int limit) {
+		List<SkuDTO> list = skuService.findByType(skutypeIdx, limit);
+		return skuService.findByType(skutypeIdx, limit);
+	}
+
+	@PostMapping("/Sku/addToCart")
+	public ResponseEntity<CartItemEntity> addToCart(@RequestBody CartItemDTO cartItemDTO) {
+		CartItemEntity cartItemEntity = cartService.addToCart(cartItemDTO);
+		return ResponseEntity.ok(cartItemEntity);
+	}
+
+	@PostMapping("/addToWish")
+	public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishitemDto) {
+		WishItemEntity wishItemEntity = wishService.addToWish(wishitemDto);
+		return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
+	}
+
 }
