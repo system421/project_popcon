@@ -20,4 +20,7 @@ public interface CartService {
     List<CartItemEntity> findCartItemsByCustomerIdx(int customerIdx);
     void deleteCartItemsByCustomerIdx(int customerIdx, List<Integer> excludeSkuIds);
     
+    List<CartItemDTO> getCartItems(int cartIdx);
+    void moveKeepItemToCart(int keepItemIdx, int cartIdx);
+    
     }

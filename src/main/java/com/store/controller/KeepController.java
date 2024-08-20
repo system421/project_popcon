@@ -51,10 +51,13 @@ public class KeepController {
     }
 
     // 냉장고에 항목 추가
-    @PostMapping("/add-items")
-    public ResponseEntity<Void> addItemsToKeep(@RequestParam int customerIdx, @RequestBody List<KeepItemDTO> keepItems) {
-        keepService.moveItemsToKeep(customerIdx, keepItems);
-        return ResponseEntity.ok().build();
+    @PostMapping("/moveitem")
+    public ResponseEntity<String> moveItemsToCart(@RequestParam int keepItemIdx, @RequestParam int cartIdx) {
+        try {
+            keepService.moveItemsToCart(keepItemIdx, cartIdx);
+            return ResponseEntity.ok("Product moved to cart successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error moving product to cart: " + e.getMessage());
+        }
     }
-
 }

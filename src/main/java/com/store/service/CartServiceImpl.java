@@ -18,10 +18,12 @@ import com.store.service.CartService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -167,4 +169,30 @@ public class CartServiceImpl implements CartService {
             }
         }
     }
+    @Override
+    public List<CartItemDTO> getCartItems(int cartIdx) {
+        List<CartItemEntity> cartItems = cartMapper.selectCartItemsByCartIdx(cartIdx);
+        return cartItems.stream().map(CartItemDTO::of).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void moveKeepItemToCart(int keepItemIdx, int cartIdx) {
+        KeepItemEntity keepItem = keepItemRepository.findById(keepItemIdx)
+                .orElseThrow(() -> new RuntimeException("Keep Item not found"));
+
+        CartEntity cartEntity = cartRepository.findById(cartIdx)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cart(cartEntity)
+                .skuIdx(keepItem.getSkuIdx())
+                .skuValue(keepItem.getQty())
+                .keepCost(BigDecimal.ZERO)
+                .build();
+
+        cartItemRepository.save(cartItem);
+        keepItemRepository.delete(keepItem);
+    }
+    
 }

@@ -1,5 +1,7 @@
 package com.store.dto;
 
+import java.math.BigDecimal;
+
 import com.store.entity.CartItemEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +19,9 @@ public class CartItemDTO {
     private int skuValue; // 수량
     private String skuName;
     private Integer skuCost;
-
-
+    private Integer keepCost;  // Keep에서 넘어온 상품의 가격
+    private Integer finalCost;
+    private String source;  
     public static CartItemDTO of(CartItemEntity itemEntity) {
         if (itemEntity == null) {
             return null;
@@ -28,6 +31,7 @@ public class CartItemDTO {
         item.setCartIdx(itemEntity.getCart().getCartIdx());  // 추가된 필드 설정
         item.setSkuIdx(itemEntity.getSkuIdx());
         item.setSkuValue(itemEntity.getSkuValue());
+        
         return item;
     }
 }

@@ -4,8 +4,12 @@ import com.store.dto.KeepDTO;
 import com.store.dto.KeepItemDTO;
 import com.store.entity.Keep;
 import com.store.entity.KeepItemEntity;
+import com.store.entity.CartEntity;
+import com.store.entity.CartItemEntity;
 import com.store.entity.Customer;
 import com.store.mapper.KeepMapper;
+import com.store.repository.CartItemRepository;
+import com.store.repository.CartRepository;
 import com.store.repository.CustomerRepository;
 import com.store.repository.KeepItemRepository;
 import com.store.repository.KeepRepository;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +30,16 @@ public class KeepServiceImpl implements KeepService {
     private final KeepItemRepository keepItemRepository;
     private final KeepMapper keepMapper;
     private final CustomerRepository customerRepository;
-
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
     @Autowired
-    public KeepServiceImpl(KeepRepository keepRepository, KeepItemRepository keepItemRepository, KeepMapper keepMapper, CustomerRepository customerRepository) {
+    public KeepServiceImpl(KeepRepository keepRepository, KeepItemRepository keepItemRepository, KeepMapper keepMapper, CustomerRepository customerRepository,CartRepository cartRepository, CartItemRepository cartItemRepository) {
         this.keepRepository = keepRepository;
         this.keepItemRepository = keepItemRepository;
         this.keepMapper = keepMapper;
         this.customerRepository = customerRepository;
+        this.cartRepository = cartRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
 
@@ -93,11 +101,30 @@ public class KeepServiceImpl implements KeepService {
     }
 
     @Override
-    public void moveItemsToKeep(int customerIdx, List<KeepItemDTO> keepItems) {
-        for (KeepItemDTO keepItem : keepItems) {
-            addToKeep(keepItem);
-        }
+    @Transactional
+    public void moveItemsToCart(int keepItemIdx, int cartIdx) {
+        // keepItemIdx로 keepitem 조회
+        KeepItemEntity keepItem = keepItemRepository.findById(keepItemIdx)
+                .orElseThrow(() -> new RuntimeException("Keep Item not found"));
+
+        // cartEntity 객체를 생성하고 cartIdx를 설정
+        CartEntity cartEntity = cartRepository.findById(cartIdx)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        // cart 항목 생성 및 저장
+        CartItemEntity cartItem = CartItemEntity.builder()
+                .cart(cartEntity)
+                .skuIdx(keepItem.getSkuIdx())
+                .skuValue(keepItem.getQty())
+                .keepCost(BigDecimal.ZERO)   // SKU 비용을 0으로 강제 설정
+                .build();
+
+        cartItemRepository.save(cartItem);
+        System.out.println("Cart Item Saved with skuCost: " + cartItem.getKeepCost ());
+        // keepitem에서 해당 아이템 삭제
+        keepItemRepository.delete(keepItem);
     }
+
 
     @Override
     public List<KeepItemDTO> findAll(){

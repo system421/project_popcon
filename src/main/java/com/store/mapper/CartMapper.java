@@ -13,11 +13,13 @@ import com.store.dto.CartDTO;
 import com.store.dto.CartItemDTO;
 import com.store.dto.CustomerDTO;
 import com.store.dto.SkuDTO;
+import com.store.entity.CartItemEntity;
 
 @Mapper
 public interface CartMapper {
-
+	  List<CartItemDTO> getCartItems(@Param("cartIdx") int cartIdx);
 	 List<CartDTO> findCartsByCustomerIdx(int customerIdx);
 	 List<CartItemDTO> findAll();
+	List<CartItemEntity> selectCartItemsByCartIdx(int cartIdx);
 }
 

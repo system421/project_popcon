@@ -14,4 +14,5 @@ public interface KeepItemRepository extends JpaRepository<KeepItemEntity, Intege
     void deleteByKeepFridgeIdx(int fridgeIdx);
     
     Optional<KeepItemEntity> findByKeepFridgeIdxAndSkuIdx(int fridgeIdx, int skuIdx);
+    
 }

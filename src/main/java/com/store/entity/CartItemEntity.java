@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.*;
@@ -35,7 +36,8 @@ public class CartItemEntity {
 
     @Column(name = "sku_idx")
     private int skuIdx;
-
+    @Column(name = "sku_Value")
     private int skuValue;
-	    
+    @Column(name = "keep_cost")
+    private BigDecimal keepCost;  // 추가된 필드
 }

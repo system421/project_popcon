@@ -21,5 +21,6 @@ public interface KeepService {
     KeepItemEntity addToKeep(KeepItemDTO keepItemDTO);
     List<KeepItemDTO> findAll();
     
-    void moveItemsToKeep(int customerIdx, List<KeepItemDTO> keepItems);
+    void moveItemsToCart(int keepItemIdx, int cartIdx);
+    
 }
