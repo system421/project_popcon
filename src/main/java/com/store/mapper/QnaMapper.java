@@ -8,5 +8,5 @@ import com.store.dto.QnaDTO;
 
 @Mapper
 public interface QnaMapper {
-	public List<QnaDTO> findMyQna();
+	public List<QnaDTO> findMyQna(int CustomerIdx);
 }
