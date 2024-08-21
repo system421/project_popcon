@@ -20,21 +20,23 @@
   	</resultMap>
   	
   	<select id="findMyQna" resultMap="S2C">
- 			select qna_idx,
- 				   faqtype_idx,
- 				   customer_idx,
- 				   qna_title,
- 				   qna_text,
- 				   qna_picture,
- 				   qna_image,
- 				   qna_state,
- 				   qna_clear_date,
- 				   qna_date,
- 				   qna_del,
- 				   qna_ans
- 			  from CUSTOMER_QNA
+		  	select q.qna_idx,
+ 				   q.faqtype_idx,
+ 				   c.customer_idx,
+                   c.customer_id,
+ 				   q.qna_title,
+ 				   q.qna_text,
+                   q.qna_picture,
+                   q.qna_image,
+ 				   q.qna_date,
+ 				   q.qna_state,
+                   m.qna_ans,
+                   m.qna_clear_date
+			  from CUSTOMER_QNA q
+	    right join customer c on c.customer_idx = q.customer_idx
+        left join manager_qna m on m.qna_idx = q.qna_idx
  			 where qna_del=false
- 			   and customer_idx=#{customer_idx}
+ 			   and c.customer_idx=#{customer_idx}
  			 
   	</select>
   	<insert id="postMyQna" parameterType="QnaDTO">

@@ -1,15 +1,11 @@
 package com.store.entity;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,16 +46,14 @@ public class CustomerQna {
 	@Column(name="qna_image")
 	String qnaImage;
 	
+	@Column(name="qna_state")
+	String qnaState;
+	
 	@Column(name="qna_del")
 	Boolean qnaDel;
 	
-//	타임스탬프는 SQL로 저장
-	@Column(name="qna_date")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")	
-	LocalDateTime qnaDate;
-	
-	@Column(name="qna_ans")
-	String qnaAns;
+//	@OneToOne(mappedBy="customerQna")
+//	ManagerQna reply;
 	
 ////	타임스탬프는 SQL로 저장
 //	@Column(name="qna_date")

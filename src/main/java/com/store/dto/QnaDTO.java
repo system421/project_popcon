@@ -28,12 +28,12 @@ public class QnaDTO {
 	String qnaTitle;
 	@NotEmpty(message="내용을 입력하세요.")
 	String qnaText;
+	String qnaPicture;  //	이미지 파일명
+	String qnaImage;	//	이미지 문자열
 	String qnaDate;
-	String qnaPicture;
-	String qnaImage;	
 	String qnaState;
+	String qnaAns;
 	String qnaClearDate;
 	String qnaDel;
-	
 	
 }
