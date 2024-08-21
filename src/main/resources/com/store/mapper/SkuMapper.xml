@@ -7,16 +7,17 @@
 <mapper namespace="com.store.mapper.SkuMapper">
 
 	<select id="findAll" parameterType="int" resultType="Sku">
-		SELECT 
-		    s.sku_idx AS skuIdx,
-		    s.skutype_idx AS skuTypeIdx,
-		    s.sku_name AS skuName,
-		    s.sku_cost AS skuCost,
-		    s.sku_barcode AS skuBarcode,
-		    p.promotion_idx as promotionIdx
-		FROM SKU AS s
+		SELECT
+		s.sku_idx AS skuIdx,
+		s.skutype_idx AS skuTypeIdx,
+		s.sku_name AS skuName,
+		s.sku_cost AS skuCost,
+		s.sku_barcode AS skuBarcode,
+		p.promotion_idx as promotionIdx
+		FROM sku AS s
 		INNER JOIN sku_promotion AS p
-		ON s.sku_idx = p.sku_idx
+		ON s.sku_idx
+		= p.sku_idx
 		limit #{limit}
 	</select>
 
@@ -29,7 +30,7 @@
 		    s.sku_cost AS skuCost,
 		    s.sku_barcode AS skuBarcode,
 		    p.promotion_idx AS promotionIdx
-		FROM SKU AS s
+		FROM sku AS s
 		INNER JOIN sku_promotion AS p
 		ON s.sku_idx = p.sku_idx
 		WHERE

@@ -2,21 +2,19 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+
 <mapper namespace="com.store.mapper.PayOrderMapper">
 
-
 	<select id="findAll" resultType="com.store.dto.PayOrderDTO">
-        SELECT po.PayOrder_idx, po.customer_idx, po.cart_idx, po.order_date,
-               c.customer_name, c.customer_email, c.customer_phone, c.customer_add, c.customer_add_more,
-               ca.sku_idx, ca.sku_value
-        FROM PayOrder po
-        JOIN Customer c ON po.customer_idx = c.customer_idx
-        JOIN Cart ca ON po.cart_idx = ca.cart_idx
-    </select>
+		SELECT po.PayOrder_idx, po.customer_idx, po.cart_idx, po.order_date,
+		c.customer_name, c.customer_email, c.customer_phone, c.customer_add,
+		c.customer_add_more,
+		ca.sku_idx, ca.sku_value
+		FROM payorder po
+		JOIN customer c ON po.customer_idx = c.customer_idx
+		JOIN cart ca ON po.cart_idx = ca.cart_idx
+	</select>
 
-
-   
 </mapper>
 
 
