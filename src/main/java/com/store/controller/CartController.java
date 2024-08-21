@@ -62,14 +62,15 @@ public class CartController {
 
     // 장바구니에서 Keep으로 이동
     @PostMapping("/cart/moveToKeep")
-    public ResponseEntity<String> moveToKeep(@RequestParam int cartItemIdx, @RequestParam int fridgeIdx) {
+    public ResponseEntity<String> moveToKeep(@RequestParam int cartItemIdx, @RequestParam int fridgeIdx, @RequestParam(defaultValue = "1") int qty) {
         try {
-            cartService.moveToKeep(cartItemIdx, fridgeIdx);
+            cartService.moveToKeep(cartItemIdx, fridgeIdx, qty);
             return ResponseEntity.ok("Product moved to keep successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error moving product to keep: " + e.getMessage());
         }
     }
+
 
     // 고객 ID를 기반으로 장바구니 비우기
     @DeleteMapping("/cart/clear/{customerIdx}")
@@ -87,8 +88,12 @@ public class CartController {
 
     // Keep에서 장바구니로 아이템 이동
     @PostMapping("/moveToCart")
-    public ResponseEntity<String> moveKeepItemToCart(@RequestParam int keepItemIdx, @RequestParam int cartIdx) {
-        cartService.moveKeepItemToCart(keepItemIdx, cartIdx);
-        return ResponseEntity.ok("Item moved to cart successfully.");
-    }
+    public ResponseEntity<String> moveKeepItemToCart(@RequestParam int keepItemIdx, @RequestParam int cartIdx, @RequestParam int quantity) {
+        try {
+            cartService.moveKeepItemToCart(keepItemIdx, cartIdx, quantity);
+            return ResponseEntity.ok("Item moved to cart successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error moving product to cart: " + e.getMessage());
+        }
+}
 }

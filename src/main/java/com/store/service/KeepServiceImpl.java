@@ -116,7 +116,8 @@ public class KeepServiceImpl implements KeepService {
                 .cart(cartEntity)
                 .skuIdx(keepItem.getSkuIdx())
                 .skuValue(keepItem.getQty())
-                .keepCost(BigDecimal.ZERO)   // SKU 비용을 0으로 강제 설정
+                .keepCost(BigDecimal.ZERO)  
+                .source("KEEP") // SKU 비용을 0으로 강제 설정
                 .build();
 
         cartItemRepository.save(cartItem);

@@ -15,25 +15,26 @@
     </resultMap>
 
     <select id="findCartItemsByCartIdx" resultType="com.store.dto.CartItemDTO">
-               SELECT 
-            ci.cart_item_idx AS cartItemIdx,
-            ci.cart_idx AS cartIdx,
-            ci.sku_value AS skuValue,
-            s.sku_name AS skuName,
-            s.sku_cost AS skuCost,
-            ci.keep_cost AS keepCost,
-            ci.source AS source,  <!-- Source 추가 -->
-            CASE 
-                WHEN ci.keep_cost IS NULL THEN s.sku_cost
-                ELSE ci.keep_cost
-            END AS finalCost
-        FROM cart_item ci
-        LEFT JOIN sku s ON ci.sku_idx = s.sku_idx
-        WHERE ci.cart_idx IN (
-            SELECT cart_idx 
-            FROM cart 
-            WHERE customer_idx = #{customerIdx}
-        )
+            SELECT 
+        ci.cart_item_idx AS cartItemIdx,
+        ci.cart_idx AS cartIdx,
+        ci.sku_idx AS skuIdx, <!-- skuIdx 추가 -->
+        ci.sku_value AS skuValue,
+        s.sku_name AS skuName,
+        s.sku_cost AS skuCost,
+        ci.keep_cost AS keepCost,
+        ci.source AS source, <!-- Source 추가 -->
+        CASE 
+            WHEN ci.keep_cost IS NULL THEN s.sku_cost
+            ELSE ci.keep_cost
+        END AS finalCost
+    FROM cart_item ci
+    LEFT JOIN sku s ON ci.sku_idx = s.sku_idx
+    WHERE ci.cart_idx IN (
+        SELECT cart_idx 
+        FROM cart 
+        WHERE customer_idx = #{customerIdx}
+    )
     </select>
   
     

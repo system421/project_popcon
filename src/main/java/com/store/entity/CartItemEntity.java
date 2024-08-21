@@ -40,4 +40,6 @@ public class CartItemEntity {
     private int skuValue;
     @Column(name = "keep_cost")
     private BigDecimal keepCost;  // 추가된 필드
+    @Column(name = "source")
+    private String source;
 }

@@ -103,9 +103,9 @@ public class CartServiceImpl implements CartService {
         CartEntity cartEntity = cartRepository.findById(cartItemDTO.getCartIdx())
             .orElseThrow(() -> new RuntimeException("Cart not found"));
 
-        // Check if the item with the same skuIdx exists in the cart
+        // Check if the item with the same skuIdx and source exists in the cart
         Optional<CartItemEntity> existingCartItem = cartItemRepository
-            .findByCartCartIdxAndSkuIdx(cartEntity.getCartIdx(), cartItemDTO.getSkuIdx());
+            .findByCartCartIdxAndSkuIdxAndSource(cartEntity.getCartIdx(), cartItemDTO.getSkuIdx(), "SKU");
 
         if (existingCartItem.isPresent()) {
             // If the item exists, increase the count
@@ -114,24 +114,30 @@ public class CartServiceImpl implements CartService {
             return cartItemRepository.save(cartItemEntity);
         } else {
             // If the item does not exist, create a new one with count 1
-            CartItemEntity cartItemEntity = new CartItemEntity();
-            cartItemEntity.setCart(cartEntity);
-            cartItemEntity.setSkuIdx(cartItemDTO.getSkuIdx());
-            cartItemEntity.setSkuValue(1); // Set initial count to 1
+            CartItemEntity cartItemEntity = CartItemEntity.builder()
+                .cart(cartEntity)
+                .skuIdx(cartItemDTO.getSkuIdx())
+                .skuValue(1) // Set initial count to 1
+                .source("SKU") // Set the source to "SKU"
+                .build();
             return cartItemRepository.save(cartItemEntity);
         }
-
     }
+
+
     @Override
     public List<CartItemDTO> findAll() {
         return cartMapper.findAll();
     }
     @Override
     @Transactional
-    public void moveToKeep(int cartItemIdx, int fridgeIdx) {
+    public void moveToKeep(int cartItemIdx, int fridgeIdx, int qty) {
         // cartItemIdx로 카트 아이템을 조회
         CartItemEntity cartItem = cartItemRepository.findById(cartItemIdx)
             .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        // 실제 이동하려는 수량이 현재 카트에 있는 수량보다 많은 경우 처리
+        int actualQtyToMove = Math.min(qty, cartItem.getSkuValue());
 
         // KeepEntity 객체 생성 및 fridgeIdx 설정
         Keep keepEntity = new Keep();
@@ -141,14 +147,22 @@ public class CartServiceImpl implements CartService {
         KeepItemEntity keepItem = KeepItemEntity.builder()
                 .keep(keepEntity)
                 .skuIdx(cartItem.getSkuIdx())
-                .qty(cartItem.getSkuValue())
+                .qty(actualQtyToMove)
                 .build();
         
         keepItemRepository.save(keepItem);
 
-        // 카트 아이템 삭제
-        cartItemRepository.delete(cartItem);
+        // 카트 아이템 수량을 줄이거나 삭제
+        if (cartItem.getSkuValue() > actualQtyToMove) {
+            cartItem.setSkuValue(cartItem.getSkuValue() - actualQtyToMove);
+            cartItemRepository.save(cartItem);
+        } else {
+            cartItemRepository.delete(cartItem);
+        }
     }
+
+
+
 
 
     @Override
@@ -177,9 +191,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public void moveKeepItemToCart(int keepItemIdx, int cartIdx) {
+    public void moveKeepItemToCart(int keepItemIdx, int cartIdx, int quantity) {
+        // KeepItem에서 해당 아이템을 조회
         KeepItemEntity keepItem = keepItemRepository.findById(keepItemIdx)
-                .orElseThrow(() -> new RuntimeException("Keep Item not found"));
+                .orElseThrow(() -> new RuntimeException("Keep item not found"));
 
         CartEntity cartEntity = cartRepository.findById(cartIdx)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
@@ -189,10 +204,17 @@ public class CartServiceImpl implements CartService {
                 .skuIdx(keepItem.getSkuIdx())
                 .skuValue(keepItem.getQty())
                 .keepCost(BigDecimal.ZERO)
+                .source("KEEP") 
                 .build();
 
         cartItemRepository.save(cartItem);
-        keepItemRepository.delete(keepItem);
+
+        // KeepItem의 수량을 차감 또는 삭제
+        if (keepItem.getQty() > quantity) {
+            keepItem.setQty(keepItem.getQty() - quantity);
+            keepItemRepository.save(keepItem);
+        } else {
+            keepItemRepository.delete(keepItem);
+        }
     }
-    
 }

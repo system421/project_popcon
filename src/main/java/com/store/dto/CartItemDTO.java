@@ -31,7 +31,7 @@ public class CartItemDTO {
         item.setCartIdx(itemEntity.getCart().getCartIdx());  // 추가된 필드 설정
         item.setSkuIdx(itemEntity.getSkuIdx());
         item.setSkuValue(itemEntity.getSkuValue());
-        
+        item.setSource(itemEntity.getSource());
         return item;
     }
 }
