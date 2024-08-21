@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.store.mapper.SkuMapper">
+
+	<select id="findAll" parameterType="int" resultType="Sku">
+		SELECT 
+		    s.sku_idx AS skuIdx,
+		    s.skutype_idx AS skuTypeIdx,
+		    s.sku_name AS skuName,
+		    s.sku_cost AS skuCost,
+		    s.sku_barcode AS skuBarcode,
+		    p.promotion_idx as promotionIdx
+		FROM SKU AS s
+		INNER JOIN sku_promotion AS p
+		ON s.sku_idx = p.sku_idx
+		limit #{limit}
+	</select>
+
+	<select id="findByType" parameterType="int" resultType="Sku">
+	<![CDATA[
+		SELECT 
+		    s.sku_idx AS skuIdx,
+		    s.skutype_idx AS skuTypeIdx,
+		    s.sku_name AS skuName,
+		    s.sku_cost AS skuCost,
+		    s.sku_barcode AS skuBarcode,
+		    p.promotion_idx AS promotionIdx
+		FROM SKU AS s
+		INNER JOIN sku_promotion AS p
+		ON s.sku_idx = p.sku_idx
+		WHERE
+			skutype_idx >= #{skutypeIdx}
+        AND skutype_idx < #{skutypeIdx} + 1000
+        limit #{limit}
+	]]>
+	</select>
+
+</mapper>

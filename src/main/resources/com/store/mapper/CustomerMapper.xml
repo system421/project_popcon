@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.store.mapper.CustomerMapper">
+
+	<resultMap type="CustomerDTO" id="xxx">
+			<id property="customerIdx" column="customer_idx"/>
+			<result property="customerId" column="customer_id"/>
+			<result property="customerPw" column="customer_pw"/>
+			<result property="customerName" column="customer_name"/>
+			<result property="customerPhone" column="customer_phone"/>
+			<result property="customerDate" column="customer_date"/>
+			<result property="customerGender" column="customer_gender"/>
+			<result property="customerTime" column="customer_time"/>
+			<result property="customerAdd" column="customer_add"/>
+			<result property="customerAddMore" column="customer_add_more"/>
+			<result property="customerEmail" column="customer_email"/>
+			<result property="customerRate" column="customer_rate"/>
+			<result property="customerRole" column="customer_role"/>
+	</resultMap>
+
+
+ <select id="findById" parameterType="int" resultType="com.store.dto.CustomerDTO">
+        SELECT * FROM customer WHERE customer_idx = #{customerIdx}
+    </select>
+    
+    <select id="findByUserId" parameterType="string" resultType="com.store.dto.CustomerDTO">
+        SELECT * FROM customer WHERE customer_id = #{customer_id}
+    </select>
+    <select id="authenticate" resultMap="xxx" parameterType="hashmap">
+      select *
+      from customer
+      where customer_id=#{customer_id} and customer_pw=#{customer_pw}
+   </select>
+
+   
+</mapper>
+
+
