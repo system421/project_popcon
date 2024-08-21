@@ -27,7 +27,10 @@ public class Application  extends SpringBootServletInitializer{
 		return new WebMvcConfigurer() {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins( 
+                		"http://project-popcon-react.s3-website.ap-northeast-2.amazonaws.com",
+                        "https://projectpopcon.com",
+                		"http://localhost:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
