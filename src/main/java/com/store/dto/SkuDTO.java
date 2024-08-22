@@ -29,5 +29,6 @@ public class SkuDTO {
 	private int skuCost;
 	private String skuBarcode;
 	private int promotionIdx;
+	private int favorite;
 
 }

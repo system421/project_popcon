@@ -28,7 +28,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Alias("Wish")
+@Alias("wish")
 public class WishDTO {
 	
 	   private int wishIdx;

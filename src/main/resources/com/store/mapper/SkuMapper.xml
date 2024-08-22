@@ -8,35 +8,44 @@
 
 	<select id="findAll" parameterType="int" resultType="Sku">
 		SELECT
-		s.sku_idx AS skuIdx,
-		s.skutype_idx AS skuTypeIdx,
-		s.sku_name AS skuName,
-		s.sku_cost AS skuCost,
-		s.sku_barcode AS skuBarcode,
-		p.promotion_idx as promotionIdx
+			s.sku_idx AS skuIdx,
+			s.skutype_idx AS skuTypeIdx,
+			s.sku_name AS skuName,
+			s.sku_cost AS skuCost,
+			s.sku_barcode AS skuBarcode,
+			p.promotion_idx as promotionIdx,
+	        w.sku_idx as favorite
 		FROM sku AS s
-		INNER JOIN sku_promotion AS p
-		ON s.sku_idx
-		= p.sku_idx
-		limit #{limit}
+		INNER JOIN 
+			sku_promotion AS p
+			ON s.sku_idx = p.sku_idx
+		LEFT OUTER JOIN 
+		    wish_item AS w 
+		    ON s.sku_idx = w.sku_idx
+		limit #{limit}, 12
 	</select>
 
 	<select id="findByType" parameterType="int" resultType="Sku">
 	<![CDATA[
-		SELECT 
-		    s.sku_idx AS skuIdx,
-		    s.skutype_idx AS skuTypeIdx,
-		    s.sku_name AS skuName,
-		    s.sku_cost AS skuCost,
-		    s.sku_barcode AS skuBarcode,
-		    p.promotion_idx AS promotionIdx
+		SELECT
+			s.sku_idx AS skuIdx,
+			s.skutype_idx AS skuTypeIdx,
+			s.sku_name AS skuName,
+			s.sku_cost AS skuCost,
+			s.sku_barcode AS skuBarcode,
+			p.promotion_idx as promotionIdx,
+	        w.sku_idx as favorite
 		FROM sku AS s
-		INNER JOIN sku_promotion AS p
-		ON s.sku_idx = p.sku_idx
+		INNER JOIN 
+			sku_promotion AS p
+			ON s.sku_idx = p.sku_idx
+		LEFT OUTER JOIN 
+		    wish_item AS w 
+		    ON s.sku_idx = w.sku_idx
 		WHERE
 			skutype_idx >= #{skutypeIdx}
         AND skutype_idx < #{skutypeIdx} + 1000
-        limit #{limit}
+        limit #{limit}, 12
 	]]>
 	</select>
 

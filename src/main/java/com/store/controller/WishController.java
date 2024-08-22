@@ -57,16 +57,16 @@ public class WishController {
 	        this.wishItemRepository = wishItemRepository;
 	        this.cartItemRepository = cartItemRepository;
 	    }
-    @GetMapping("/Wish/items")
+    @GetMapping("/wish/items")
     public ResponseEntity<List<WishItemDTO>> findAll() {
         return ResponseEntity.ok(wishService.findAll());        
     }
 
-    @GetMapping("/Wish/{customerIdx}")
+    @GetMapping("/wish/{customerIdx}")
     public ResponseEntity<List<WishDTO>>getWishesByCustomerIdx(@PathVariable int customerIdx){
     	return ResponseEntity.ok(wishService.getWishesByCustomerIdx(customerIdx));
     }
-	@PostMapping("/Wish/add")
+	@PostMapping("/wish/add")
     public ResponseEntity<WishItemDTO> addToWish(@RequestBody WishItemDTO wishItemDto) {
         WishItemEntity wishItemEntity = wishService.addToWish(wishItemDto);
         return ResponseEntity.ok(WishItemDTO.of(wishItemEntity));
@@ -75,13 +75,13 @@ public class WishController {
 	public ResponseEntity<WishDTO> createWish(@RequestBody WishDTO wishDTO){
 		return ResponseEntity.ok(wishService.createWish(wishDTO));
 	}
-    @DeleteMapping("/Wish/delete/{wishItemIdx}")
+    @DeleteMapping("/wish/delete/{wishItemIdx}")
     public ResponseEntity<Void> deleteWishItem(@PathVariable int wishItemIdx) {
         wishService.deleteWishItem(wishItemIdx);
 
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/Wish/moveToCart")
+    @PostMapping("/wish/moveToCart")
     public ResponseEntity<String> moveWishToCart(@RequestParam int wishItemIdx, @RequestParam int cartIdx) {
         try {
             wishService.moveWishToCart(wishItemIdx, cartIdx);
