@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.store.mapper.OrderMapper">
+
+    <!-- 주문 생성 -->
+    <insert id="insertOrder" parameterType="com.store.dto.OrderDTO">
+        INSERT INTO `order` (delivery_idx, customer_idx, order_status_idx, cart_idx, order_time, order_price, payment_id)
+        VALUES (#{deliveryIdx}, #{customerIdx}, #{orderStatusIdx}, #{cartIdx}, #{orderTime}, #{orderPrice}, #{paymentId})
+        <selectKey keyProperty="orderIdx" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 주문 조회 -->
+    <select id="selectOrderById" resultType="com.store.dto.OrderDTO">
+        SELECT * FROM `order` WHERE order_idx = #{orderIdx}
+    </select>
+    
+</mapper>
