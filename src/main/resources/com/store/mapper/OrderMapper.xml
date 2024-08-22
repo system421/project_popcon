@@ -5,8 +5,10 @@
 
     <!-- 주문 생성 -->
     <insert id="insertOrder" parameterType="com.store.dto.OrderDTO">
-        INSERT INTO `order` (delivery_idx, customer_idx, order_status_idx, cart_idx, order_time, order_price, payment_id)
-        VALUES (#{deliveryIdx}, #{customerIdx}, #{orderStatusIdx}, #{cartIdx}, #{orderTime}, #{orderPrice}, #{paymentId})
+
+        INSERT INTO `order` (delivery_idx, customer_idx, order_status_idx, cart_idx, order_time, payment_id)
+        VALUES (#{deliveryIdx}, #{customerIdx}, #{orderStatusIdx}, #{cartIdx}, #{orderTime},  #{paymentId})
+
         <selectKey keyProperty="orderIdx" order="AFTER" resultType="int">
             SELECT LAST_INSERT_ID()
         </selectKey>

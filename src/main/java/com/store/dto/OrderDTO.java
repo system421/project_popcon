@@ -23,6 +23,5 @@ public class OrderDTO {
     private int orderStatusIdx;
     private int cartIdx;
     private LocalDateTime orderTime;
-    private Integer orderPrice;
     private String paymentId;
 }
