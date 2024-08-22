@@ -62,7 +62,13 @@
 		    <version>3.2.0</version>
 		</dependency>
 
-	  
+		<!-- opensearch -->
+	<dependency>
+    <groupId>org.opensearch.client</groupId>
+    <artifactId>opensearch-rest-high-level-client</artifactId>
+    <version>1.0.0</version>
+</dependency>
+
 		<dependency>
 		    <groupId>org.mybatis.spring.boot</groupId>
 		    <artifactId>mybatis-spring-boot-starter</artifactId>
