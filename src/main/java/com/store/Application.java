@@ -45,6 +45,7 @@ public class Application extends SpringBootServletInitializer {
                     .allowedOrigins(
                         "http://project-popcon-react.s3-website.ap-northeast-2.amazonaws.com/*",
                         "https://projectpopcon.com/*",
+                        "https://d2a7a3tzrwboc6.cloudfront.net/*",
                         "http://localhost:3000/*")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
