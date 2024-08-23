@@ -1,103 +1,78 @@
-name: CI/CD Pipeline
+name: Deploy Spring Boot to AWS Elastic Beanstalk
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+env:
+  AWS_REGION: ap-northeast-2
+  ECR_REPOSITORY: 767397751289.dkr.ecr.ap-northeast-2.amazonaws.com/popcon/projectpopcon
+  EB_APP_NAME: POPCONDOCKERAPP 
+  EB_ENV_NAME: POPCONDOCKERAPP-env
+  DEPLOY_PACKAGE_NAME: eb-deploy-${{ github.sha }}.zip
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      image-tag: ${{ steps.build-docker-image.outputs.image-tag }}
-
+    
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - run: touch ./src/main/resources/application.properties
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties   
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
+    - name: Build with Maven
+      run: mvn clean package -DskipTests
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Docker 이미지 빌드
+        echo "FROM openjdk:11-jre-slim" > Dockerfile
+        echo "ARG JAR_FILE=target/*.jar" >> Dockerfile
+        echo "COPY \${JAR_FILE} app.jar" >> Dockerfile
+        echo "EXPOSE 5000" >> Dockerfile
+        echo "ENTRYPOINT [\"java\",\"-jar\",\"-Dserver.port=5000\",\"/app.jar\"]" >> Dockerfile
         
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+    - name: Generate deployment package
+      run: |
+        echo '{"AWSEBDockerrunVersion":"1","Image":{"Name":"${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}","Update":"true"},"Ports":[{"ContainerPort":5000,"HostPort":5000}]}' > Dockerrun.aws.json
+        zip -r ${{ env.DEPLOY_PACKAGE_NAME }} Dockerrun.aws.json
 
-      - name: Build and push Docker image to Amazon ECR
-        id: build-docker-image
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: popcon/projectpopcon
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG.zip .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG.zip
-          echo "::set-output name=image-tag::$IMAGE_TAG.zip"
-          
-  deploy:
-  
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Dockerrun.aws.json
-        env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: popcon/projectpopcon
-          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
-        run: |
-          echo '{
-            "AWSEBDockerrunVersion": "1",
-            "Image": {
-              "Name": "'$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'",
-              "Update": "true"
-            },
-            "Ports": [
-              {
-                "ContainerPort": "8080"
-              }
-            ]
-          }' > Dockerrun.aws.json
-  
-      - name: Deploy to AWS Elastic Beanstalk
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          EB_APP_NAME: POPCONDOCKERAPP
-          EB_ENV_NAME: POPCONDOCKERAPP-env
-          EB_REGION: ${{ secrets.AWS_REGION }}
-          S3_BUCKET: ${{ secrets.EB_S3_BUCKET }}
-          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
-        run: |
-          # Upload Dockerrun.aws.json to S3
-          aws s3 cp Dockerrun.aws.json s3://$S3_BUCKET/Dockerrun-$IMAGE_TAG.aws.json
-  
-          # Create a new application version
-          aws elasticbeanstalk create-application-version \
-            --application-name $EB_APP_NAME \
-            --version-label $IMAGE_TAG \
-            --source-bundle S3Bucket="$S3_BUCKET",S3Key="Dockerrun-$IMAGE_TAG.aws.json" \
-            --region $EB_REGION
-  
-          # Update environment to use the new version
-          aws elasticbeanstalk update-environment \
-            --application-name $EB_APP_NAME \
-            --environment-name $EB_ENV_NAME \
-            --version-label $IMAGE_TAG \
-            --region $EB_REGION
+    - name: Upload package to S3 bucket
+      run: |
+        aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ secrets.EB_S3_BUCKET }}/
+
+    - name: Create new ElasticBeanstalk Application Version
+      run: |
+        aws elasticbeanstalk create-application-version \
+          --application-name ${{ env.EB_APP_NAME }} \
+          --source-bundle S3Bucket="${{ secrets.EB_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
+          --version-label "ver-${{ github.sha }}" \
+          --description "commit-sha-${{ github.sha }}"
+
+    - name: Deploy to ElasticBeanstalk
+      run: |
+        aws elasticbeanstalk update-environment \
+          --environment-name ${{ env.EB_ENV_NAME }} \
+          --version-label "ver-${{ github.sha }}"
