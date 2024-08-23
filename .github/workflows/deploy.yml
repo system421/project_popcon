@@ -47,9 +47,9 @@ jobs:
           ECR_REPOSITORY: popcon/projectpopcon
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image-tag::$IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG.zip .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG.zip
+          echo "::set-output name=image-tag::$IMAGE_TAG.zip"
           
   deploy:
     needs: build
@@ -70,12 +70,12 @@ jobs:
             # Create a new application version
             aws elasticbeanstalk create-application-version \
               --application-name $EB_APP_NAME \
-              --version-label $IMAGE_TAG \
-              --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG \
+              --version-label $IMAGE_TAG.zip \
+              --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG.zip \
               --region $EB_REGION
 
             # Update environment to use the new version
             aws elasticbeanstalk update-environment \
               --environment-name $EB_ENV_NAME \
-              --version-label $IMAGE_TAG \
+              --version-label $IMAGE_TAG.zip \
               --region $EB_REGION
