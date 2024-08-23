@@ -52,9 +52,29 @@ jobs:
           echo "::set-output name=image-tag::$IMAGE_TAG.zip"
           
   deploy:
+  
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Create Dockerrun.aws.json
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REPOSITORY: popcon/projectpopcon
+          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
+        run: |
+          echo '{
+            "AWSEBDockerrunVersion": "1",
+            "Image": {
+              "Name": "'$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG'",
+              "Update": "true"
+            },
+            "Ports": [
+              {
+                "ContainerPort": "8080"
+              }
+            ]
+          }' > Dockerrun.aws.json
+  
       - name: Deploy to AWS Elastic Beanstalk
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -62,15 +82,17 @@ jobs:
           EB_APP_NAME: POPCONDOCKERAPP
           EB_ENV_NAME: POPCONDOCKERAPP-env
           EB_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: popcon/projectpopcon
+          S3_BUCKET: ${{ secrets.EB_S3_BUCKET }}
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
+          # Upload Dockerrun.aws.json to S3
+          aws s3 cp Dockerrun.aws.json s3://$S3_BUCKET/Dockerrun-$IMAGE_TAG.aws.json
+  
           # Create a new application version
           aws elasticbeanstalk create-application-version \
             --application-name $EB_APP_NAME \
             --version-label $IMAGE_TAG \
-            --source-bundle S3Bucket="${ECR_REGISTRY}",S3Key="${ECR_REPOSITORY}/${IMAGE_TAG}" \
+            --source-bundle S3Bucket="$S3_BUCKET",S3Key="Dockerrun-$IMAGE_TAG.aws.json" \
             --region $EB_REGION
   
           # Update environment to use the new version
