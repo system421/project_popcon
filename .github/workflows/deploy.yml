@@ -55,23 +55,26 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to AWS Elastic Beanstalk
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          EB_APP_NAME: POPCONDOCKERAPP
-          EB_ENV_NAME: POPCONDOCKERAPP-env
-          EB_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: popcon/projectpopcon
-          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
-        run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name $EB_APP_NAME \
-            --version-label $GITHUB_SHA \
-            --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG \
-            --region $EB_REGION
-          aws elasticbeanstalk update-environment \
-            --environment-name $EB_ENV_NAME \
-            --version-label $GITHUB_SHA \
-            --region $EB_REGION
+       - name: Deploy to AWS Elastic Beanstalk
+         env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            EB_APP_NAME: POPCONDOCKERAPP
+            EB_ENV_NAME: POPCONDOCKERAPP-env
+            EB_REGION: ${{ secrets.AWS_REGION }}
+            ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+            ECR_REPOSITORY: popcon/projectpopcon
+            IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
+         run: |
+            # Create a new application version
+            aws elasticbeanstalk create-application-version \
+              --application-name $EB_APP_NAME \
+              --version-label $IMAGE_TAG \
+              --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG \
+              --region $EB_REGION
+
+            # Update environment to use the new version
+            aws elasticbeanstalk update-environment \
+              --environment-name $EB_ENV_NAME \
+              --version-label $IMAGE_TAG \
+              --region $EB_REGION
