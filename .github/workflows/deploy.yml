@@ -66,12 +66,8 @@ jobs:
           ECR_REPOSITORY: popcon/projectpopcon
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
-          aws elasticbeanstalk create-application-version \
-            --application-name $EB_APP_NAME \
-            --version-label $GITHUB_SHA \
-            --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG \
-            --region $EB_REGION
           aws elasticbeanstalk update-environment \
             --environment-name $EB_ENV_NAME \
             --version-label $GITHUB_SHA \
-            --region $EB_REGION
+            --region $EB_REGION \
+            --option-settings Namespace=aws:elasticbeanstalk:container:docker,OptionName=Image,Value=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
