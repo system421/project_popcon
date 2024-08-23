@@ -59,21 +59,6 @@ public class CheckOutController {
 	    	System.out.println(xx);
 	        return xx;
 	    }
-//
-//	    @PostMapping("/PayOrder/add")
-//	    public PayOrder addPayOrder(@RequestBody PayOrder payOrder) {
-//	        return payOrderService.save(payOrder);
-//	    }
-//
-//	    @PutMapping("/PayOrder/update")
-//	    public PayOrder updatePayOrder(@RequestBody PayOrder payOrder) {
-//	        return payOrderService.save(payOrder);
-//	    }
-//
-//	    @DeleteMapping("/PayOrder/delete/{id}")
-//	    public void deletePayOrder(@PathVariable int id) {
-//	        payOrderService.deleteById(id);
-//	    }
 	 
 
 }

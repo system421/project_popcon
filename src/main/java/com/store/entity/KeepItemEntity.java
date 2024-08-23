@@ -49,6 +49,4 @@ public class KeepItemEntity {
 	    
 	    @Column(name = "qty", nullable = false)
 	    private int qty;
-	    @Column(name = "sku_cost")
-	    private BigDecimal skuCost;  // 추가된 필드
 	}

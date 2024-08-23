@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.store.mapper.OrderMapper">
+
+    <!-- 특정 orderIdx로 주문 상세 정보를 조회 -->
+    <select id="getOrderDetailByOrderIdx" resultType="OrderDetailDTO">
+        SELECT 
+            o.order_idx AS orderIdx,
+            o.order_time AS orderTime,
+            o.order_price AS orderPrice,
+            o.paymentId AS paymentId,
+            d.delivery_status AS deliveryStatus,
+            os.order_status AS orderStatus,
+            oi.order_item_idx AS orderItemIdx,
+            oi.order_item_qty AS orderItemQty,
+            oi.order_item_price AS orderItemPrice,
+            p.product_name AS productName
+        FROM 
+            `order` o
+            INNER JOIN delivery d ON o.delivery_idx = d.delivery_idx
+            INNER JOIN order_status os ON o.order_status_idx = os.order_status_idx
+            INNER JOIN order_item oi ON o.order_idx = oi.order_idx
+            INNER JOIN product p ON oi.sku_idx = p.sku_idx
+        WHERE 
+            o.order_idx = #{orderIdx}
+    </select>
+
+    <!-- 모든 주문 상세 정보를 조회 -->
+    <select id="getAllOrderDetails" resultType="com.store.dto.OrderDetailDTO">
+        SELECT 
+            o.order_idx AS orderIdx,
+            o.order_time AS orderTime,
+            o.order_price AS orderPrice,
+            o.paymentId AS paymentId,
+            d.delivery_status AS deliveryStatus,
+            os.order_status AS orderStatus,
+            oi.order_item_idx AS orderItemIdx,
+            oi.order_item_qty AS orderItemQty,
+            oi.order_item_price AS orderItemPrice,
+            p.product_name AS productName
+        FROM 
+            `order` o
+            INNER JOIN delivery d ON o.delivery_idx = d.delivery_idx
+            INNER JOIN order_status os ON o.order_status_idx = os.order_status_idx
+            INNER JOIN order_item oi ON o.order_idx = oi.order_idx
+            INNER JOIN product p ON oi.sku_idx = p.sku_idx
+    </select>
+
+</mapper>
