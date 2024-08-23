@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.build-docker-image.outputs.image-tag }}
 
     steps:
       - name: Check out code
@@ -37,6 +39,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image to Amazon ECR
+        id: build-docker-image
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -46,19 +49,11 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: Upload artifact to S3
-        run: |
-          aws s3 cp artifact.zip s3://$ECR_REGISTRY/$ECR_REPOSITORY/$IMAGE_TAG.zip
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
+          echo "::set-output name=image-tag::$IMAGE_TAG"
+          
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Deploy to AWS Elastic Beanstalk
         env:
@@ -69,7 +64,7 @@ jobs:
           EB_REGION: ${{ secrets.AWS_REGION }}
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: popcon/projectpopcon
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
           aws elasticbeanstalk create-application-version \
             --application-name $EB_APP_NAME \
