@@ -1,4 +1,4 @@
-name: Deploy to AWS Elastic Beanstalk
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,46 +6,52 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v3
-    - run: touch ./src/main/resources/application.properties
-    - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-    - run: cat ./src/main/resources/application.properties
+      - name: Check out code
+        uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application.properties
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+      - run: cat ./src/main/resources/application.properties   
+     
 
-    - name: Set up JDK 11
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
 
-      uses: actions/setup-java@v1
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
-      with:
-        java-version: '11'
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Build with Maven
-      run: mvn clean package -DskipTests
+      - name: Build and push Docker image to Amazon ECR
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REPOSITORY: popcon/projectpopcon
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Upload artifact to S3
-      run: |
-        export AWS_REGION=ap-northeast-2
-        export S3_BUCKET_NAME=elasticbeanstalk-ap-northeast-2-767397751289
-        export APP_NAME=POPCONBOOTAPP
-        export ENV_NAME=POPCONBOOTAPP-env-1
-        export VERSION_LABEL=$GITHUB_SHA
-        
-        aws s3 cp target/*.jar s3://$S3_BUCKET_NAME/$APP_NAME-$VERSION_LABEL.jar --region $AWS_REGION
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-    - name: Deploy to Elastic Beanstalk
-      run: |
-        export AWS_REGION=ap-northeast-2
-        export S3_BUCKET_NAME=elasticbeanstalk-ap-northeast-2-767397751289
-        export APP_NAME=POPCONBOOTAPP
-        export ENV_NAME=POPCONBOOTAPP-env-1
-        export VERSION_LABEL=$GITHUB_SHA
-        aws elasticbeanstalk create-application-version --application-name $APP_NAME --version-label $VERSION_LABEL --source-bundle S3Bucket=$S3_BUCKET_NAME,S3Key=$APP_NAME-$VERSION_LABEL.jar --region ap-northeast-2
-        aws elasticbeanstalk update-environment --environment-name $ENV_NAME --version-label $VERSION_LABEL 
-
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Deploy to AWS Elastic Beanstalk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          EB_APP_NAME: POPCONDOCKERAPP
+          EB_ENV_NAME: POPCONDOCKERAPP-env
+          EB_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME --version-label $GITHUB_SHA --source-bundle S3Bucket=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          aws elasticbeanstalk update-environment --environment-name $EB_ENV_NAME --version-label $GITHUB_SHA

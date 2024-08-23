@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.store</groupId>
-	<artifactId>mybatisproject</artifactId>
+	<artifactId>popconproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>boot_template</name>
 	<description>Demo project for Spring Boot</description>
