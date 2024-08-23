@@ -66,8 +66,16 @@ jobs:
           ECR_REPOSITORY: popcon/projectpopcon
           IMAGE_TAG: ${{ needs.build.outputs.image-tag }}
         run: |
-          # Update environment to use the new Docker image
+          # Create a new application version
+          aws elasticbeanstalk create-application-version \
+            --application-name $EB_APP_NAME \
+            --version-label $IMAGE_TAG \
+            --source-bundle S3Bucket="${EB_APP_NAME}-elasticbeanstalk-deployment",S3Key="${ECR_REPOSITORY}/${IMAGE_TAG}" \
+            --region $EB_REGION
+  
+          # Update environment to use the new version
           aws elasticbeanstalk update-environment \
+            --application-name $EB_APP_NAME \
             --environment-name $EB_ENV_NAME \
             --version-label $IMAGE_TAG \
             --region $EB_REGION
