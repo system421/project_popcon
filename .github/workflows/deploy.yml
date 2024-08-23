@@ -69,7 +69,7 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name $EB_APP_NAME \
             --version-label $GITHUB_SHA \
-            --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG.zip \
+            --source-bundle S3Bucket=$ECR_REGISTRY, S3Key=$ECR_REPOSITORY/$IMAGE_TAG \
             --region $EB_REGION
           aws elasticbeanstalk update-environment \
             --environment-name $EB_ENV_NAME \
