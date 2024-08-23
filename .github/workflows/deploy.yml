@@ -60,6 +60,10 @@ jobs:
           EB_APP_NAME: POPCONDOCKERAPP
           EB_ENV_NAME: POPCONDOCKERAPP-env
           EB_REGION: ap-northeast-2
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REPOSITORY: popcon/projectpopcon
+          IMAGE_TAG: ${{ github.sha }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME --version-label $GITHUB_SHA --source-bundle S3Bucket=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           aws elasticbeanstalk update-environment --environment-name $EB_ENV_NAME --version-label $GITHUB_SHA
