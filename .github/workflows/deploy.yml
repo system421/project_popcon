@@ -47,12 +47,6 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        # Docker 이미지 빌드
-        echo "FROM openjdk:11-jre-slim" > Dockerfile
-        echo "ARG JAR_FILE=target/*.jar" >> Dockerfile
-        echo "COPY \${JAR_FILE} app.jar" >> Dockerfile
-        echo "EXPOSE 5000" >> Dockerfile
-        echo "ENTRYPOINT [\"java\",\"-jar\",\"-Dserver.port=5000\",\"/app.jar\"]" >> Dockerfile
         
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
