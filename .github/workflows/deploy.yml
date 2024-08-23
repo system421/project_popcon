@@ -6,7 +6,8 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: 767397751289.dkr.ecr.ap-northeast-2.amazonaws.com/popcon/projectpopcon
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  ECR_REPOSITORY: popcon/projectpopcon
   EB_APP_NAME: POPCONDOCKERAPP 
   EB_ENV_NAME: POPCONDOCKERAPP-env
   DEPLOY_PACKAGE_NAME: eb-deploy-${{ github.sha }}.zip
