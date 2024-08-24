@@ -17,9 +17,7 @@ jobs:
     - run: cat ./src/main/resources/application.properties
 
     - name: Set up JDK 11
-
       uses: actions/setup-java@v1
-
       with:
         java-version: '11'
 
@@ -43,9 +41,6 @@ jobs:
     needs: build
 
     steps:
-    - name: Download Docker image from Docker Hub
-      run: docker pull ${{ secrets.DOCKER_USERNAME }}/popcondocker:latest
-
     - name: Set up AWS CLI
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -56,11 +51,13 @@ jobs:
     - name: Log in to Amazon ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
     - name: Install Elastic Beanstalk CLI
       run: |
         sudo apt-get update
         sudo apt-get install -y python3-pip
         pip3 install awsebcli --upgrade
+
     - name: Tag Docker image for ECR
       run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/popcondocker:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/popcondocker:latest
@@ -69,10 +66,33 @@ jobs:
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/popcondocker:latest
 
-    - name: Deploy to Elastic Beanstalk
+    - name: Create Dockerrun.aws.json
+      run: |
+        echo '{
+          "AWSEBDockerrunVersion": 2,
+          "containerDefinitions": [
+            {
+              "name": "popcondocker",
+              "image": "'${{ secrets.AWS_ACCOUNT_ID }}'.dkr.ecr.'${{ secrets.AWS_REGION }}'.amazonaws.com/popcondocker:latest",
+              "memory": 512,
+              "essential": true,
+              "portMappings": [
+                {
+                  "containerPort": 5000,
+                  "hostPort": 80
+                }
+              ]
+            }
+          ]
+        }' > Dockerrun.aws.json
+
+    - name: Configure Elastic Beanstalk for Docker
       run: |
         eb init -p docker POPCONDOCKER --region ${{ secrets.AWS_REGION }}
         eb use POPCONDOCKER-env
+
+    - name: Deploy to Elastic Beanstalk
+      run: |
         eb deploy
 
     - name: Upload to S3 (Optional, if you need to upload some artifacts to S3)
