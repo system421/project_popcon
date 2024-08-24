@@ -48,13 +48,13 @@ jobs:
       - name: Deploy to Elastic Beanstalk
         run: |
           aws elasticbeanstalk create-application-version \
-            --application-name my-app \
+            --application-name POPCONDOCKERAPP \
             --version-label ${{ github.sha }} \
             --source-bundle S3Bucket="popcondockerbucket",S3Key="Dockerrun.aws.json"
 
           aws elasticbeanstalk update-environment \
-            --application-name my-app \
-            --environment-name my-env \
+            --application-name POPCONDOCKERAPP \
+            --environment-name POPCONDOCKERAPP-env  \
             --version-label ${{ github.sha }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
