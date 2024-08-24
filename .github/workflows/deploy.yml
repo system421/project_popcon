@@ -8,7 +8,7 @@ env:
   AWS_REGION: ap-northeast-2
   EB_APPLICATION_NAME: POPCONDOCKER
   EB_ENVIRONMENT_NAME: POPCONDOCKER-env
-  DOCKER_REPOSITORY: qc6600/POPCONDOCKER # Docker Hub 레포지토리를 변경하세요
+  DOCKER_REPOSITORY: qc6600/popcondocker # Docker Hub 레포지토리를 변경하세요
 
 jobs:
   build-and-deploy:
